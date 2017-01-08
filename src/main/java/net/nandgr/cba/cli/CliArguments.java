@@ -75,7 +75,7 @@ public class CliArguments {
             .hasArgs()
             .numberOfArgs(Option.UNLIMITED_VALUES)
             .argName("checks...")
-            .desc("Checks that are going to be run in the analysis separated by space. Default runs all the implemented checks. Supported values are: \"CustomDeserializationCheck\", \"DeserializationCheck\".")
+            .desc("Space separated list of custom checks that are going to be run in the analysis.")
             .build();
     // -f
     Option customFile = Option
@@ -83,7 +83,7 @@ public class CliArguments {
             .longOpt("custom-file")
             .hasArg()
             .argName("customFile")
-            .desc("Specify a file in JSON format to write custom rules. Read more in GitHub.")
+            .desc("Specify a file in JSON format to run custom rules. Read more in GitHub.")
             .build();
 
     Option verboseDebug = Option
