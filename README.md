@@ -31,7 +31,7 @@ usage: java -jar cba-cli.jar [OPTIONS] -a DIRECTORY_TO_ANALYZE
 
 Rules file can be specified using ```-f,--custom-file``` argument . The file is in JSON format and has the following structure:
 
-```
+
 * rules : array(rule)
     * name : string
     * methods :  array(method)
@@ -50,7 +50,7 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
             * visibility : [public|protected|private]
             * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default:true)
-```
+
 
 You can also check ```net.nandgr.cba.custom.model.Rules.java``` to see the structure in Java code.
 
