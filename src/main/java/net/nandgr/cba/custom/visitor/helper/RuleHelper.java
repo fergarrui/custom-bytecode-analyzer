@@ -46,6 +46,13 @@ public class RuleHelper {
         if (allEmpty(notFrom)) {
           throw new BadRulesException("\"invocation.notFrom\" property cannot have all the fields blank.");
         }
+        Method from = invocation.getFrom();
+        if (allEmpty(from)) {
+          throw new BadRulesException("\"invocation.from\" property cannot have all the fields blank.");
+        }
+        if (notFrom != null && from != null) {
+          throw new BadRulesException("\"invocation.notFrom\" and \"invocation.from\" cannot be defined at the same time in the same rule.");
+        }
         Method method = invocation.getMethod();
         if (allEmpty(method)) {
           throw new BadRulesException("\"invocation.method\" property cannot have all the fields blank.");

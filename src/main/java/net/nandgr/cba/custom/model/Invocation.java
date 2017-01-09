@@ -21,6 +21,7 @@ public class Invocation {
   private String owner;
   private Method method;
   private Method notFrom;
+  private Method from;
   private Boolean report;
 
   public String getOwner() {
@@ -45,6 +46,14 @@ public class Invocation {
 
   public void setNotFrom(Method notFrom) {
     this.notFrom = notFrom;
+  }
+
+  public Method getFrom() {
+    return from;
+  }
+
+  public void setFrom(Method from) {
+    this.from = from;
   }
 
   public Boolean isReport() {

@@ -51,6 +51,10 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
             * name : string
             * visibility : [public|protected|private]
             * parameter : string (only one parameter is supported at the moment)
+        * from : method
+            * name : string
+            * visibility : [public|protected|private]
+            * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default:true)
 
 
@@ -175,7 +179,7 @@ So we need to find method invocations from ```ObjectInputStream``` named ```read
 	}]
 }
 ```
-This tile will find ```java.io.ObjectInputStream.readObject()``` invocations if the invocation is not done inside ```private void readObject(ObjectInputStream in)``` method.
+This file will find ```java.io.ObjectInputStream.readObject()``` invocations if the invocation is not done inside ```private void readObject(ObjectInputStream in)``` method.
 
 A class compiled with this code will not be reported:
 ```
@@ -190,6 +194,8 @@ public Object deserializeObject(ObjectInputStream in) throws IOException, ClassN
       return o;
 }
 ```
+
+The property ```from``` can be set in invocations in exactly the same way than ```notFrom```, but the result will be the opposite: it will only match if the invocation is made from the defined method.
 
 #### Define multiple rules
 Multiple rules can be defined in the same JSON file. They will be processed and reported separately and they will not affect each other. We can combine some of the previous examples rules:
@@ -250,7 +256,7 @@ java -jar cba-cli-<version>.jar -a /path/with/jars -c YourCustomRule1 -v
 ```
 Trace level:
 ```
-java -jar cba-cli-<version>.jar -a /path/with/jars -c YourCustomRule1 -v
+java -jar cba-cli-<version>.jar -a /path/with/jars -c YourCustomRule1 -vv
 ```
 ## Build and run the project
 

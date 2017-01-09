@@ -39,7 +39,8 @@ public class CustomMethodInvocationVisitor extends CustomAbstractVisitor {
     logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
 
     Method notFrom = invocation.getNotFrom();
-    if (checkNotFrom(notFrom, access, name, desc)) {
+    Method from = invocation.getFrom();
+    if (checkNotFrom(notFrom, access, name, desc) && checkFrom(from, access, name, desc)) {
       return new CustomInvocationFinderVisitor(this, invocation);
     }
     return super.visitMethod(access, name, desc, signature, exceptions);
@@ -50,6 +51,13 @@ public class CustomMethodInvocationVisitor extends CustomAbstractVisitor {
       return true;
     }
     return !RuleHelper.isValidMethod(notFrom, access, name, desc);
+  }
+
+  private static boolean checkFrom(Method from, int access, String name, String desc) {
+    if (from == null) {
+      return true;
+    }
+    return RuleHelper.isValidMethod(from, access, name, desc);
   }
 
   @Override
