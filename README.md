@@ -2,6 +2,8 @@
 
 Java bytecode analyzer customizable via JSON rules. It is a command-line tool that receives a path containing one or more [Jar](https://en.wikipedia.org/wiki/JAR_(file_format)) files, analyzes it using the provided rules and generates a HTML reports with the results.
 
+[![Build Status](https://travis-ci.org/fergarrui/custom-bytecode-analyzer.svg?branch=master)](https://travis-ci.org/fergarrui/custom-bytecode-analyzer)
+
 ## Usage
 
 ```
