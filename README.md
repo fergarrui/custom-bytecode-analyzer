@@ -184,7 +184,6 @@ private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundE
 But this one will be reported:
 ```
 public Object deserializeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-
       Object o = in.readObject();
       return o;
 }
@@ -218,7 +217,7 @@ Here, we have two rules ("Custom deserialization" and "Method invocation by refl
 
 ## Custom Java rules
 
-The project can be downloaded and built to add more complex custom rules in Java code that are not covered by the JSON format. There are already three examples under the package ```net.nandgr.cba.visitor.checks```. Those are ```CustomDeserializationCheck, DeserializationCheck and InvokeMethodCheck```. You can create your own rules by extending ```net.nandgr.cba.custom.visitor.CustomAbstractVisitor```. ```CustomAbstractVisitor``` is extending [ASM](http://asm.ow2.org/) ```org.objectweb.asm.classVisitor```, so plenty of documentation can be found in the internet about it.
+The project can be downloaded and built to add more complex custom rules in Java code that are not covered by the JSON format. There are already three examples under the package ```net.nandgr.cba.visitor.checks```. Those are ```CustomDeserializationCheck, DeserializationCheck and InvokeMethodCheck```. You can create your own rules by extending ```net.nandgr.cba.custom.visitor.CustomAbstractVisitor```. ```CustomAbstractVisitor``` is extending [ASM](http://asm.ow2.org/) ```org.objectweb.asm.ClassVisitor```, so plenty of documentation can be found in the internet about it.
 
 ## Command line examples
 
@@ -240,7 +239,7 @@ java -jar cba-cli-<version>.jar -a /path/with/jars -c DeserializationCheck Invok
 java -jar cba-cli-<version>.jar -a /path/with/jars -f /path/with/json/file/rules.json -c YourCustomRule1 YourCustomRule2
 ```
 
-#### Add trace debug level
+#### Increase verbosity
 
 To find errors, verbosity can be increased.
 Debug level:
