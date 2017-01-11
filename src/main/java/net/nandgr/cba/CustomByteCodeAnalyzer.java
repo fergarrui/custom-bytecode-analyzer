@@ -19,6 +19,8 @@ package net.nandgr.cba;
 import java.lang.reflect.InvocationTargetException;
 import net.nandgr.cba.custom.model.Rule;
 import net.nandgr.cba.custom.model.Rules;
+import net.nandgr.cba.custom.visitor.CustomClassInterfacesVisitor;
+import net.nandgr.cba.custom.visitor.CustomClassSuperClassVisitor;
 import net.nandgr.cba.custom.visitor.CustomMethodInvocationVisitor;
 import net.nandgr.cba.custom.visitor.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
@@ -34,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +75,16 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
           CustomMethodInvocationVisitor customMethodInvocationVisitor = new CustomMethodInvocationVisitor(invocation, rule.getName());
           ruleVisitorsAnalyzer.getVisitorList().add(customMethodInvocationVisitor);
         }
+      }
+      List<String> interfaces = rule.getInterfaces();
+      if (interfaces != null && !interfaces.isEmpty()) {
+        CustomClassInterfacesVisitor customClassInterfacesVisitor = new CustomClassInterfacesVisitor(interfaces, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customClassInterfacesVisitor);
+      }
+      String superClass = rule.getSuperClass();
+      if (!StringUtils.isBlank(superClass)) {
+        CustomClassSuperClassVisitor customClassSuperClassVisitor = new CustomClassSuperClassVisitor(superClass, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customClassSuperClassVisitor);
       }
       this.ruleVisitorsAnalyzers.add(ruleVisitorsAnalyzer);
     }

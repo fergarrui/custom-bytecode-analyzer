@@ -21,6 +21,8 @@ import java.util.List;
 public class Rule {
 
   private String name;
+  private List<String> interfaces;
+  private String superClass;
   private List<Invocation> invocations;
   private List<Method> methods;
 
@@ -30,6 +32,22 @@ public class Rule {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public List<String> getInterfaces() {
+    return interfaces;
+  }
+
+  public void setInterfaces(List<String> interfaces) {
+    this.interfaces = interfaces;
+  }
+
+  public String getSuperClass() {
+    return superClass;
+  }
+
+  public void setSuperClass(String superClass) {
+    this.superClass = superClass;
   }
 
   public List<Invocation> getInvocations() {

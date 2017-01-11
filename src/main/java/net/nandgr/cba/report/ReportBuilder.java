@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,12 +123,14 @@ public class ReportBuilder {
         Td lineNumberValue = new Td(lineNumber);
         new NoTag(lineNumberValue, String.valueOf(reportItemLineNumber));
       }
-
-      Tr methodName = new Tr(itemTable);
-      Td methodNameKey = new Td(methodName);
-      new NoTag(methodNameKey, "Method name: ");
-      Td methodNameValue = new Td(methodName);
-      new NoTag(methodNameValue, reportItem.getMethodName());
+      String reportMethodName = reportItem.getMethodName();
+      if (!StringUtils.isBlank(reportMethodName)) {
+        Tr methodName = new Tr(itemTable);
+        Td methodNameKey = new Td(methodName);
+        new NoTag(methodNameKey, "Method name: ");
+        Td methodNameValue = new Td(methodName);
+        new NoTag(methodNameValue, reportMethodName);
+      }
       if (!reportItemIterator.hasNext()) {
         htmlChunks.add(html.toHtmlString());
       }

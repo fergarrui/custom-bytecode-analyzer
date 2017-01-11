@@ -1,6 +1,6 @@
 # custom-bytecode-analyzer
 
-Java bytecode analyzer customizable via JSON rules. It is a command-line tool that receives a path containing one or more [Jar](https://en.wikipedia.org/wiki/JAR_(file_format)) files, analyzes it using the provided rules and generates HTML reports with the results.
+Java bytecode analyzer customizable via JSON rules. It is a command-line tool that receives a path containing one or more [Jar](https://en.wikipedia.org/wiki/JAR_(file_format)) files, analyzes them using the provided rules and generates HTML reports with the results.
 
 [![Build Status](https://travis-ci.org/fergarrui/custom-bytecode-analyzer.svg?branch=master)](https://travis-ci.org/fergarrui/custom-bytecode-analyzer)
 
@@ -36,6 +36,8 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
 
 * rules : array(rule)
     * name : string
+    * interfaces : array(string)
+    * superClass : string
     * methods :  array(method)
         * name : string
         * visibility : [public|protected|private]
@@ -150,7 +152,7 @@ Another method invocation example a bit more useful than the previous one:
 }
 ```
 
-#### Deserialization usage example
+#### Deserialization usage
 In this example, we want to find deserialization usages (not classes defining serialization behaviors like in the previous examples). Deserialization happens when ```ObjectInputStream.readObject()``` is invoked. for example in this code snippet:
 
 ```
@@ -196,6 +198,36 @@ public Object deserializeObject(ObjectInputStream in) throws IOException, ClassN
 ```
 
 The property ```from``` can be set in invocations in exactly the same way than ```notFrom```, but the result will be the opposite: it will only match if the invocation is made from the defined method.
+
+#### Java servlets
+
+The property ```superClass```  can be used in this case. If we want to find all classes extending ```javax.servlet.http.HttpServlet```, a rule can be:
+
+```
+{
+        "rules": [{
+                "name": "Java servlets",
+                "superClass" : "javax.servlet.http.HttpServlet"
+        }]
+}
+
+```
+
+#### X509TrustManager implementations
+
+A rule can be written to find classes implementing an array of interfaces. if more than one interface is defined in the rule, the class has to implement all of them to be reported. If we want to find classes implementing ```javax.net.ssl.X509TrustManager```, the rule would be:
+
+```
+{
+        "rules": [{
+                "name": "X509TrustManager implementations",
+                "interfaces" : ["javax.net.ssl.X509TrustManager"]
+        }]
+}
+
+```
+
+Please note that ```interfaces``` is an *array*, so make sure you add the strings between square brackets, e.g: ```["interface1", "interface2", ...]```.
 
 #### Define multiple rules
 Multiple rules can be defined in the same JSON file. They will be processed and reported separately and they will not affect each other. We can combine some of the previous examples rules:
