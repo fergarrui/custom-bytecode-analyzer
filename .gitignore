@@ -7,3 +7,7 @@ target/
 # logs 
 
 *.log
+
+# app specific
+
+report/
