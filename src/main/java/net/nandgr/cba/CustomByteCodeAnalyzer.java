@@ -17,8 +17,10 @@
 package net.nandgr.cba;
 
 import java.lang.reflect.InvocationTargetException;
+import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Rule;
 import net.nandgr.cba.custom.model.Rules;
+import net.nandgr.cba.custom.visitor.CustomAnnotationVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassInterfacesVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassSuperClassVisitor;
 import net.nandgr.cba.custom.visitor.CustomMethodInvocationVisitor;
@@ -86,6 +88,13 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
         CustomClassSuperClassVisitor customClassSuperClassVisitor = new CustomClassSuperClassVisitor(superClass, rule.getName());
         ruleVisitorsAnalyzer.getVisitorList().add(customClassSuperClassVisitor);
       }
+      List<Annotation> annotations = rule.getAnnotations();
+      if (annotations != null && !annotations.isEmpty()) {
+        for (Annotation annotation : annotations) {
+          CustomAnnotationVisitor customAnnotationVisitor = new CustomAnnotationVisitor(annotation, rule.getName());
+          ruleVisitorsAnalyzer.getVisitorList().add(customAnnotationVisitor);
+        }
+      }
       this.ruleVisitorsAnalyzers.add(ruleVisitorsAnalyzer);
     }
     logger.debug("Rules processed.");
@@ -124,7 +133,7 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
     } catch (Exception e) {
       logger.error("Error while analyzing inputStream", e);
     }
-    logger.debug("File analyzed, {} issue(s).", reportItems.size());
+    logger.debug("File analyzed, {} issue(s) found.", reportItems.size());
     return reportItems;
   }
 }

@@ -38,6 +38,9 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
     * name : string
     * interfaces : array(string)
     * superClass : string
+    * annotations : array(annotation)
+        * type : string
+        * report : boolean (default: true)
     * methods :  array(method)
         * name : string
         * visibility : [public|protected|private]
@@ -205,10 +208,10 @@ The property ```superClass```  can be used in this case. If we want to find all 
 
 ```
 {
-        "rules": [{
-                "name": "Java servlets",
-                "superClass" : "javax.servlet.http.HttpServlet"
-        }]
+  "rules": [{
+    "name": "Java servlets",
+    "superClass" : "javax.servlet.http.HttpServlet"
+  }]
 }
 
 ```
@@ -219,15 +222,31 @@ A rule can be written to find classes implementing an array of interfaces. if mo
 
 ```
 {
-        "rules": [{
-                "name": "X509TrustManager implementations",
-                "interfaces" : ["javax.net.ssl.X509TrustManager"]
-        }]
+  "rules": [{
+    "name": "X509TrustManager implementations",
+    "interfaces" : ["javax.net.ssl.X509TrustManager"]
+  }]
 }
-
 ```
 
 Please note that ```interfaces``` is an *array*, so make sure you add the strings between square brackets, e.g: ```["interface1", "interface2", ...]```.
+
+#### Find Spring endpoints
+
+Annotations are also supported. Multiple annotations properties can be defined in a rule. If all of them are found in the analyzed class, it will be reported.
+It is going to search classes and method annotations.
+For example, if we want to find Spring endpoints, we would search for classes or methods annotated with ```org.springframework.web.bind.annotation.RequestMapping```. So, the rule can be:
+
+```
+{
+        "rules": [{
+                "name": "Spring endpoints",
+                "annotations" : [{
+                        "type" : "org.springframework.web.bind.annotation.RequestMapping"
+                }
+        }]
+}
+```
 
 #### Define multiple rules
 Multiple rules can be defined in the same JSON file. They will be processed and reported separately and they will not affect each other. We can combine some of the previous examples rules:

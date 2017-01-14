@@ -14,31 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.nandgr.cba.custom.visitor.helper;
+package net.nandgr.cba.custom.model;
 
-public class StringsHelper {
+import java.util.List;
 
-  private StringsHelper() {
-    throw new IllegalAccessError("Cannot instantiate this utility class.");
+public class Annotation {
+
+  private String type;
+  private boolean report;
+
+  public String getType() {
+    return type;
   }
 
-  public static String dotsToSlashes(String s) {
-    return s.replaceAll("\\.", "/");
+  public void setType(String type) {
+    this.type = type;
   }
 
-  public static String spacesToDashesLowercase(String s) {
-    return s.replaceAll(" ", "-").toLowerCase();
+  public boolean isReport() {
+    return report;
   }
 
-  public static String simpleDescriptorToHuman(String s) {
-    String result = s;
-    if (result.startsWith("L")) {
-      result = result.substring(1, result.length());
-    }
-    if (result.endsWith(";")) {
-      result = result.substring(0, result.length()-1);
+  public void setReport(boolean report) {
+    this.report = report;
+  }
 
-    }
-    return result;
+  @Override
+  public String toString() {
+    return "Annotation{" +
+            "type=" + type +
+            ", report=" + report +
+            '}';
   }
 }

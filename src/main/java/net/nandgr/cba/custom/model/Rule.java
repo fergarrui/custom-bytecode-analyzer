@@ -25,6 +25,7 @@ public class Rule {
   private String superClass;
   private List<Invocation> invocations;
   private List<Method> methods;
+  private List<Annotation> annotations;
 
   public String getName() {
     return name;
@@ -66,12 +67,23 @@ public class Rule {
     this.methods = methods;
   }
 
+  public List<Annotation> getAnnotations() {
+    return annotations;
+  }
+
+  public void setAnnotations(List<Annotation> annotations) {
+    this.annotations = annotations;
+  }
+
   @Override
   public String toString() {
     return "Rule{" +
             "name='" + name + '\'' +
+            ", interfaces=" + interfaces +
+            ", superClass='" + superClass + '\'' +
             ", invocations=" + invocations +
             ", methods=" + methods +
+            ", annotations=" + annotations +
             '}';
   }
 }
