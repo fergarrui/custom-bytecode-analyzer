@@ -99,7 +99,7 @@ public class CliArguments {
             .longOpt("custom-file")
             .hasArg()
             .argName("customFile")
-            .desc("Specify a file in JSON format to run custom rules. Read more in GitHub.")
+            .desc("Specify a file in JSON format to run custom rules. Read more in https://github.com/fergarrui/custom-bytecode-analyzer.")
             .build();
 
     Option verboseDebug = Option

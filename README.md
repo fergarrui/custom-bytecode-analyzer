@@ -13,7 +13,8 @@ usage: java -jar cba-cli.jar [OPTIONS] -a DIRECTORY_TO_ANALYZE
 -c,--checks <checks...>          Space separated list of custom checks
 								 that are going to be run in the analysis.
  -f,--custom-file <customFile>   Specify a file in JSON format to run
-                                 custom rules. Read more in GitHub.
+                                 custom rules. Read more in
+                                 https://github.com/fergarrui/custom-bytecode-analyzer.
  -h,--help                       Print this message.
  -i,--items-report <maxItems>    Max number of items per report. If the
                                  number of issues found exceeds this
@@ -239,12 +240,12 @@ For example, if we want to find Spring endpoints, we would search for classes or
 
 ```
 {
-        "rules": [{
-                "name": "Spring endpoints",
-                "annotations" : [{
-                        "type" : "org.springframework.web.bind.annotation.RequestMapping"
-                }
-        }]
+  "rules": [{
+    "name": "Spring endpoints",
+    "annotations" : [{
+      "type" : "org.springframework.web.bind.annotation.RequestMapping"
+    }
+  }]
 }
 ```
 
