@@ -310,6 +310,16 @@ Trace level:
 ```
 java -jar cba-cli-<version>.jar -a /path/with/jars -c YourCustomRule1 -vv
 ```
+
+## Analyze Android APKs
+
+At the moment, the APK has to be converted to JAR first to be analyzed.
+
+* Download dex2jar : https://github.com/pxb1988/dex2jar
+* Convert DEX to JAR
+    * ```d2j-dex2jar.sh -f -o app_to_analyze.jar app_to_analyze.apk```
+* Run cba-cli.jar as usual passing as ```-a``` parameter the directory containing the converted jar file.
+
 ## Build and run the project
 
 There is already an executable jar file under ```bin``` directory at: [https://github.com/fergarrui/custom-bytecode-analyzer/blob/master/bin/cba-cli-0.1-SNAPSHOT.jar](https://github.com/fergarrui/custom-bytecode-analyzer/blob/master/bin/cba-cli-0.1-SNAPSHOT.jar) . If you want to do modifications or add custom rules, the project can be built doing:
