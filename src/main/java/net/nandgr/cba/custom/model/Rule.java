@@ -26,6 +26,7 @@ public class Rule {
   private List<Invocation> invocations;
   private List<Method> methods;
   private List<Annotation> annotations;
+  private List<Field> fields;
 
   public String getName() {
     return name;
@@ -75,6 +76,14 @@ public class Rule {
     this.annotations = annotations;
   }
 
+  public List<Field> getFields() {
+    return fields;
+  }
+
+  public void setFields(List<Field> fields) {
+    this.fields = fields;
+  }
+
   @Override
   public String toString() {
     return "Rule{" +
@@ -84,6 +93,7 @@ public class Rule {
             ", invocations=" + invocations +
             ", methods=" + methods +
             ", annotations=" + annotations +
+            ", fields=" + fields +
             '}';
   }
 }

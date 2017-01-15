@@ -21,13 +21,15 @@ public class ReportItem {
   private String jarPath = "";
   private String className = "";
   private final String methodName;
+  private final String fieldName;
   private final String ruleName;
   private final int lineNumber;
 
-  public ReportItem(int lineNumber, String methodName, String ruleName) {
+  public ReportItem(int lineNumber, String methodName, String fieldName, String ruleName) {
     this.lineNumber = lineNumber;
     this.methodName = methodName;
     this.ruleName = ruleName;
+    this.fieldName = fieldName;
   }
 
   public String getJarPath() {
@@ -48,6 +50,10 @@ public class ReportItem {
 
   public String getMethodName() {
     return methodName;
+  }
+
+  public String getFieldName() {
+    return fieldName;
   }
 
   public void setJarPath(String jarPath) {

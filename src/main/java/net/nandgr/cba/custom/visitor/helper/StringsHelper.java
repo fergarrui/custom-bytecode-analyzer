@@ -32,6 +32,9 @@ public class StringsHelper {
 
   public static String simpleDescriptorToHuman(String s) {
     String result = s;
+    if(result.startsWith("[")) {
+      result = result.substring(1, result.length());
+    }
     if (result.startsWith("L")) {
       result = result.substring(1, result.length());
     }

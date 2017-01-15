@@ -53,7 +53,7 @@ public class CustomMethodAnnotationVisitor extends MethodVisitor {
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     logger.trace("visitAnnotation: desc={}, visible={}", desc, visible);
     if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotation.getType()))) {
-      ReportItem reportItem = new ReportItem(lineNumber, methodName, parentVisitor.getRuleName());
+      ReportItem reportItem = new ReportItem(lineNumber, methodName, null, parentVisitor.getRuleName());
       parentVisitor.setIssueFound(true);
       parentVisitor.itemsFound().add(reportItem);
     }

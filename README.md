@@ -37,6 +37,12 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
 
 * rules : array(rule)
     * name : string
+    * fields : array(field)
+        * visibility : (public|protected|private)
+        * type : string
+        * valueRegex : string (java regular expression) - only supported if the variable is ```final```
+        * nameRegex : string (java regular expression)
+        * report : boolean
     * interfaces : array(string)
     * superClass : string
     * annotations : array(annotation)
@@ -44,22 +50,22 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
         * report : boolean (default: true)
     * methods :  array(method)
         * name : string
-        * visibility : [public|protected|private]
+        * visibility : (public|protected|private)
         * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default: true)
     * invocations : array(invocation)
         * owner : string
         * method : method
             * name : string
-            * visibility : [public|protected|private]
+            * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
         * notFrom : method
             * name : string
-            * visibility : [public|protected|private]
+            * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
         * from : method
             * name : string
-            * visibility : [public|protected|private]
+            * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default:true)
 
@@ -245,6 +251,25 @@ For example, if we want to find Spring endpoints, we would search for classes or
     "annotations" : [{
       "type" : "org.springframework.web.bind.annotation.RequestMapping"
     }
+  }]
+}
+```
+
+#### Find fields
+
+The property ```rule.fields``` can be used to find class fields. If we want to find private String fields with password names, a rule like this one could be used:
+
+```
+{
+  "rules": [{
+    "name" : "Password fields",
+    "fields" : [
+      {
+        "visibility" : "private",
+        "type" : "java.lang.String"
+        "nameRegex" : "(password|pass|psswd|passwd)"
+      }
+]
   }]
 }
 ```

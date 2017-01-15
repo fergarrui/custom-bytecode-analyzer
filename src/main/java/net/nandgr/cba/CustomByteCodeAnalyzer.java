@@ -18,11 +18,13 @@ package net.nandgr.cba;
 
 import java.lang.reflect.InvocationTargetException;
 import net.nandgr.cba.custom.model.Annotation;
+import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Rule;
 import net.nandgr.cba.custom.model.Rules;
 import net.nandgr.cba.custom.visitor.CustomAnnotationVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassInterfacesVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassSuperClassVisitor;
+import net.nandgr.cba.custom.visitor.CustomFieldVisitor;
 import net.nandgr.cba.custom.visitor.CustomMethodInvocationVisitor;
 import net.nandgr.cba.custom.visitor.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
@@ -93,6 +95,13 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
         for (Annotation annotation : annotations) {
           CustomAnnotationVisitor customAnnotationVisitor = new CustomAnnotationVisitor(annotation, rule.getName());
           ruleVisitorsAnalyzer.getVisitorList().add(customAnnotationVisitor);
+        }
+      }
+      List<Field> fields = rule.getFields();
+      if (fields != null && !fields.isEmpty()) {
+        for (Field field : fields) {
+          CustomFieldVisitor customFieldVisitor = new CustomFieldVisitor(field, rule.getName());
+          ruleVisitorsAnalyzer.getVisitorList().add(customFieldVisitor);
         }
       }
       this.ruleVisitorsAnalyzers.add(ruleVisitorsAnalyzer);

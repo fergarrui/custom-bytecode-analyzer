@@ -131,6 +131,14 @@ public class ReportBuilder {
         Td methodNameValue = new Td(methodName);
         new NoTag(methodNameValue, reportMethodName);
       }
+      String reportFieldName = reportItem.getFieldName();
+      if (!StringUtils.isBlank(reportFieldName)) {
+        Tr fieldName = new Tr(itemTable);
+        Td fieldNameKey = new Td(fieldName);
+        new NoTag(fieldNameKey, "Field name: ");
+        Td fieldNameValue = new Td(fieldName);
+        new NoTag(fieldNameValue, reportFieldName);
+      }
       if (!reportItemIterator.hasNext()) {
         htmlChunks.add(html.toHtmlString());
       }

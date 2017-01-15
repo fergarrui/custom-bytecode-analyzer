@@ -37,7 +37,7 @@ public class CustomMethodVisitor extends CustomAbstractVisitor {
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
     logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
     if (RuleHelper.isValidMethod(method, access, name, desc)) {
-      ReportItem reportItem = new ReportItem(-1, name, getRuleName());
+      ReportItem reportItem = new ReportItem(-1, name, null, getRuleName());
       if (showInReport()) {
         this.itemsFound.add(reportItem);
       }

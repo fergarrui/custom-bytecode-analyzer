@@ -16,6 +16,10 @@
  */
 package net.nandgr.cba.custom.visitor.helper;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.model.Method;
 import net.nandgr.cba.custom.model.Rule;
@@ -23,8 +27,12 @@ import net.nandgr.cba.custom.model.Rules;
 import net.nandgr.cba.exception.BadRulesException;
 import org.apache.commons.lang.StringUtils;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleHelper {
+
+  private static final Logger logger = LoggerFactory.getLogger(RuleHelper.class);
 
   private RuleHelper() {
     throw new IllegalAccessError("Cannot instantiate this utility class.");
@@ -73,7 +81,7 @@ public class RuleHelper {
     String methodVisibility = method.getVisibility();
     if (methodVisibility != null) {
       int ruleVisibility = getOpcodeVisibility(methodVisibility);
-      isValid &=  access == ruleVisibility;
+      isValid &=  (access & ruleVisibility) != 0;
     }
     String methodName = method.getName();
     if (methodName != null) {
@@ -99,7 +107,44 @@ public class RuleHelper {
     return isValid;
   }
 
-  private static int getOpcodeVisibility(String visibility) {
+  public static boolean isValidField(Field field, int access, String name, String desc, String signature, Object value) {
+    logger.trace("isValidField: field={}, access={}, name={}, desc={}, signature={}, value={}", field, access, name, desc, signature, value);
+    boolean isValid = true;
+    String type = field.getType();
+    if (!StringUtils.isBlank(type)) {
+      isValid &= StringsHelper.dotsToSlashes(type).equals(StringsHelper.simpleDescriptorToHuman(desc));
+    }
+    String visibility = field.getVisibility();
+    if (!StringUtils.isBlank(visibility)) {
+      int visibilityOpcode = getOpcodeVisibility(visibility);
+      isValid &= (access & visibilityOpcode) != 0;
+    }
+    String valueRegex = field.getValueRegex();
+    if (!StringUtils.isBlank(valueRegex)) {
+      try {
+        Pattern pattern = Pattern.compile(valueRegex);
+        String valueString = String.valueOf(value);
+        Matcher matcher = pattern.matcher(valueString);
+        isValid &= matcher.matches();
+      } catch (PatternSyntaxException e) {
+        throw e;
+      }
+    }
+    String nameRegex = field.getNameRegex();
+    if (!StringUtils.isBlank(nameRegex)) {
+      try {
+        Pattern pattern = Pattern.compile(nameRegex);
+        String nameString = String.valueOf(name);
+        Matcher matcher = pattern.matcher(nameString);
+        isValid &= matcher.matches();
+      } catch (PatternSyntaxException e) {
+        throw e;
+      }
+    }
+    return isValid;
+  }
+
+  public static int getOpcodeVisibility(String visibility) {
     if ("public".equals(visibility)) {
       return Opcodes.ACC_PUBLIC;
     }

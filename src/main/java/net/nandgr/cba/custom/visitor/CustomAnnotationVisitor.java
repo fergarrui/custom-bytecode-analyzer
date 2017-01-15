@@ -39,7 +39,7 @@ public class CustomAnnotationVisitor extends CustomAbstractVisitor {
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     logger.trace("visitAnnotation: desc={}, visible={}", desc, visible);
     if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotation.getType()))) {
-      ReportItem reportItem = new ReportItem(-1, null, getRuleName());
+      ReportItem reportItem = new ReportItem(-1, null, null,getRuleName());
       this.setIssueFound(true);
       this.itemsFound().add(reportItem);
     }
