@@ -40,7 +40,7 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
     * fields : array(field)
         * visibility : (public|protected|private)
         * type : string
-        * valueRegex : string (java regular expression) - only supported if the variable is ```final```
+        * valueRegex : string (java regular expression) - only supported if the field is ```final```
         * nameRegex : string (java regular expression)
         * report : boolean (default: true)
     * interfaces : array(string)
