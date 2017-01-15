@@ -42,7 +42,7 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
         * type : string
         * valueRegex : string (java regular expression) - only supported if the variable is ```final```
         * nameRegex : string (java regular expression)
-        * report : boolean
+        * report : boolean (default: true)
     * interfaces : array(string)
     * superClass : string
     * annotations : array(annotation)
