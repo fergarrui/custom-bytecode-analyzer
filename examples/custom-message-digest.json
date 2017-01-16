@@ -1,0 +1,6 @@
+{
+  "rules": [{
+    "name": "Custom Message Digest",
+    "superClass" : "java.security.MessageDigest"
+  }]
+}

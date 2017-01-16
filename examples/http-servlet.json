@@ -1,0 +1,6 @@
+{
+  "rules": [{
+    "name": "Java servlets",
+    "superClass" : "javax.servlet.http.HttpServlet"
+  }]
+}

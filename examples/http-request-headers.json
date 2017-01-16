@@ -1,0 +1,20 @@
+{
+  "rules": [{
+    "name": "Request Headers use",
+    "invocations": [{
+      "owner": "javax.servlet.http.HttpServletRequest",
+      "method": {
+        "name": "getHeader"
+      }
+    }]
+  },
+  {
+    "name": "Request Headers use (cookies)",
+    "invocations": [{
+      "owner": "javax.servlet.http.HttpServletRequest",
+      "method": {
+        "name": "getCookies"
+      }
+    }]
+  }]
+}

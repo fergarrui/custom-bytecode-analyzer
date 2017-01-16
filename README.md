@@ -250,7 +250,7 @@ For example, if we want to find Spring endpoints, we would search for classes or
     "name": "Spring endpoints",
     "annotations" : [{
       "type" : "org.springframework.web.bind.annotation.RequestMapping"
-    }
+    }]
   }]
 }
 ```

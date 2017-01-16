@@ -1,0 +1,6 @@
+{
+  "rules": [{
+    "name": "X509TrustManager implementation",
+    "interfaces" : ["javax.net.ssl.X509TrustManager"]
+  }]
+}

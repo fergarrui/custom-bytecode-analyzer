@@ -1,0 +1,8 @@
+{
+  "rules": [{
+    "name": "Spring endpoint",
+    "annotations" : [{
+      "type" : "org.springframework.web.bind.annotation.RequestMapping"
+    }]
+  }]
+}

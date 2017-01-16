@@ -1,0 +1,8 @@
+{
+  "rules": [{
+    "name": "JAX-RS Endpoint",
+    "annotations" : [{
+      "type" : "javax.ws.rs.Path"
+    }]
+  }]
+}

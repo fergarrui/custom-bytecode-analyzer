@@ -1,0 +1,11 @@
+{
+  "rules": [{
+    "name": "Response Redirect",
+    "invocations": [{
+      "owner": "javax.servlet.http.HttpServletResponse",
+      "method": {
+        "name": "sendRedirect"
+      }
+    }]
+  }]
+}

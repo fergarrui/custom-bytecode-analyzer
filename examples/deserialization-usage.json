@@ -1,0 +1,16 @@
+{
+  "rules": [{
+    "name": "Deserialization usage",
+    "invocations": [{
+      "owner": "java.io.ObjectInputStream",
+      "method": {
+        "name": "readObject"
+      },
+      "notFrom": {
+        "name": "readObject",
+        "visibility": "private",
+        "parameter": "java.io.ObjectInputStream"
+      }
+    }]
+  }]
+}
