@@ -23,10 +23,11 @@ public class Rule {
   private String name;
   private List<String> interfaces;
   private String superClass;
-  private List<Invocation> invocations;
-  private List<Method> methods;
   private List<Annotation> annotations;
   private List<Field> fields;
+  private List<Method> methods;
+  private List<Invocation> invocations;
+  private List<Variable> variables;
 
   public String getName() {
     return name;
@@ -84,16 +85,25 @@ public class Rule {
     this.fields = fields;
   }
 
+  public List<Variable> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(List<Variable> variables) {
+    this.variables = variables;
+  }
+
   @Override
   public String toString() {
     return "Rule{" +
             "name='" + name + '\'' +
             ", interfaces=" + interfaces +
             ", superClass='" + superClass + '\'' +
-            ", invocations=" + invocations +
-            ", methods=" + methods +
             ", annotations=" + annotations +
             ", fields=" + fields +
+            ", methods=" + methods +
+            ", invocations=" + invocations +
+            ", variables=" + variables +
             '}';
   }
 }

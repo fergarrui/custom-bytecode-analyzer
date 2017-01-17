@@ -16,6 +16,9 @@
  */
 package net.nandgr.cba.custom.visitor;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import net.nandgr.cba.report.ReportItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ import org.objectweb.asm.Opcodes;
 
 public abstract class CustomAbstractVisitor extends ClassVisitor implements CustomVisitor {
 
-  protected List<ReportItem> itemsFound = new ArrayList<>();
+  protected Collection<ReportItem> itemsFound = new ArrayList<>();
   protected boolean foundIssue = false;
   private final String ruleName;
 
@@ -44,7 +47,7 @@ public abstract class CustomAbstractVisitor extends ClassVisitor implements Cust
   }
 
   @Override
-  public List<ReportItem> itemsFound() {
+  public Collection<ReportItem> itemsFound() {
     return itemsFound;
   }
 

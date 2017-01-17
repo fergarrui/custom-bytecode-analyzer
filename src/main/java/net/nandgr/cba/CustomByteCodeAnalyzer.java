@@ -21,11 +21,13 @@ import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Rule;
 import net.nandgr.cba.custom.model.Rules;
+import net.nandgr.cba.custom.model.Variable;
 import net.nandgr.cba.custom.visitor.CustomAnnotationVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassInterfacesVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassSuperClassVisitor;
 import net.nandgr.cba.custom.visitor.CustomFieldVisitor;
 import net.nandgr.cba.custom.visitor.CustomMethodInvocationVisitor;
+import net.nandgr.cba.custom.visitor.CustomVariableVisitor;
 import net.nandgr.cba.custom.visitor.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
 import net.nandgr.cba.cli.CliHelper;
@@ -102,6 +104,13 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
         for (Field field : fields) {
           CustomFieldVisitor customFieldVisitor = new CustomFieldVisitor(field, rule.getName());
           ruleVisitorsAnalyzer.getVisitorList().add(customFieldVisitor);
+        }
+      }
+      List<Variable> variables =  rule.getVariables();
+      if (variables != null && !variables.isEmpty()) {
+        for (Variable variable : variables) {
+          CustomVariableVisitor customVariableVisitor = new CustomVariableVisitor(variable, rule.getName());
+          ruleVisitorsAnalyzer.getVisitorList().add(customVariableVisitor);
         }
       }
       this.ruleVisitorsAnalyzers.add(ruleVisitorsAnalyzer);

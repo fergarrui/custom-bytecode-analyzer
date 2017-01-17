@@ -48,6 +48,10 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
     * annotations : array(annotation)
         * type : string
         * report : boolean (default: true)
+    * variables : array(variable)
+        * type : string
+        * nameRegex : string (java regular expression)
+        * report (default: true)
     * methods :  array(method)
         * name : string
         * visibility : (public|protected|private)
@@ -59,20 +63,22 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
             * name : string
             * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
-        * notFrom : method
+        * from : method
             * name : string
             * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
-        * from : method
+        * notFrom : method
             * name : string
             * visibility : (public|protected|private)
             * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default:true)
 
-
 You can also check ```net.nandgr.cba.custom.model.Rules.java``` to see the structure in Java code.
 
 ### Examples
+
+There are already several examples under the directory [examples](https://github.com/fergarrui/custom-bytecode-analyzer/tree/master/examples) .
+Anyway, below are listed examples for every rule.
 
 #### Find custom deserialization
 If we need to find classes with custom deserialization, we can do it quite easily. A class defines custom deserialization by implementing ```private void readObject(ObjectInputStream in)```. So we only need to find all classes where that method is defined. It would be enough just to define a rule as:
@@ -162,6 +168,30 @@ Another method invocation example a bit more useful than the previous one:
 }
 ```
 
+#### Find String instantiations
+
+It is the same than any method invocation, but the name of the method in this case, should be ```<init>```.
+
+```
+{
+  "rules": [{
+    "name" : "String instantiation",
+    "invocations" : [{
+        "owner" : "java.lang.String",
+        "method" : {
+          "name" : "<init>"
+        }
+    }]
+  }]
+}
+```
+This rule will find occurrences of:
+```
+[...]
+String s = new String("foo");
+[...]
+```
+
 #### Deserialization usage
 In this example, we want to find deserialization usages (not classes defining serialization behaviors like in the previous examples). Deserialization happens when ```ObjectInputStream.readObject()``` is invoked. for example in this code snippet:
 
@@ -223,7 +253,7 @@ The property ```superClass```  can be used in this case. If we want to find all 
 
 ```
 
-#### X509TrustManager implementations
+#### Interface implementations
 
 A rule can be written to find classes implementing an array of interfaces. if more than one interface is defined in the rule, the class has to implement all of them to be reported. If we want to find classes implementing ```javax.net.ssl.X509TrustManager```, the rule would be:
 
@@ -270,6 +300,22 @@ The property ```rule.fields``` can be used to find class fields. If we want to f
         "nameRegex" : "(password|pass|psswd|passwd)"
       }
 ]
+  }]
+}
+```
+
+#### Find variables
+
+To find variables, ```rule.variables``` can be used. This rule will report local variables and method arguments variables.
+If we want to find all variables of type ```javax.servlet.http.Part```, a rule could be:
+
+```
+{
+  "rules": [{
+    "name" : "Servlet upload file",
+    "variables" : [{
+        "type" : "javax.servlet.http.Part"
+    }]
   }]
 }
 ```

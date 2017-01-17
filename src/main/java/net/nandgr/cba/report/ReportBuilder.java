@@ -124,6 +124,9 @@ public class ReportBuilder {
         new NoTag(lineNumberValue, String.valueOf(reportItemLineNumber));
       }
       String reportMethodName = reportItem.getMethodName();
+      if (reportMethodName.startsWith("<") && reportMethodName.endsWith(">")) {
+        reportMethodName = reportMethodName.substring(1, reportMethodName.length()-1);
+      }
       if (!StringUtils.isBlank(reportMethodName)) {
         Tr methodName = new Tr(itemTable);
         Td methodNameKey = new Td(methodName);
@@ -135,7 +138,7 @@ public class ReportBuilder {
       if (!StringUtils.isBlank(reportFieldName)) {
         Tr fieldName = new Tr(itemTable);
         Td fieldNameKey = new Td(fieldName);
-        new NoTag(fieldNameKey, "Field name: ");
+        new NoTag(fieldNameKey, "Field/var name: ");
         Td fieldNameValue = new Td(fieldName);
         new NoTag(fieldNameValue, reportFieldName);
       }

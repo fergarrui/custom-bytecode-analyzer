@@ -69,6 +69,60 @@
   {
     "name": "X509TrustManager implementation",
     "interfaces" : ["javax.net.ssl.X509TrustManager"]
+  },
+  {
+    "name": "File creation - java.io.File",
+    "invocations": [{
+      "owner": "java.io.File",
+      "method": {
+        "name": "<init>"
+      }
+    }]
+  },
+  {
+    "name": "File creation - java.io.FileInputStream",
+    "invocations": [{
+      "owner": "java.io.File",
+      "method": {
+        "name": "<init>"
+      }
+    }]
+  },
+  {
+    "name": "File creation - java.io.FileReader",
+    "invocations": [{
+      "owner": "java.io.FileReader",
+      "method": {
+        "name": "<init>"
+      }
+    }]
+  },
+  {
+    "name": "File creation - java.io.RandomAccessFile",
+    "invocations": [{
+      "owner": "java.io.RandomAccessFile",
+      "method": {
+        "name": "<init>"
+      }
+    }]
+  },
+  {
+    "name": "File creation - java.io.FileWriter",
+    "invocations": [{
+      "owner": "java.io.FileWriter",
+      "method": {
+        "name": "<init>"
+      }
+    }]
+  },
+  {
+    "name": "File creation - java.io.FileOutputStream",
+    "invocations": [{
+      "owner": "java.io.FileOutputStream",
+      "method": {
+        "name": "<init>"
+      }
+    }]
   }
   ]
 }

@@ -63,4 +63,32 @@ public class ReportItem {
   public void setClassName(String className) {
     this.className = className;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ReportItem)) return false;
+
+    ReportItem that = (ReportItem) o;
+
+    if (getLineNumber() != that.getLineNumber()) return false;
+    if (!getJarPath().equals(that.getJarPath())) return false;
+    if (!getClassName().equals(that.getClassName())) return false;
+    if (getMethodName() != null ? !getMethodName().equals(that.getMethodName()) : that.getMethodName() != null)
+      return false;
+    if (getFieldName() != null ? !getFieldName().equals(that.getFieldName()) : that.getFieldName() != null)
+      return false;
+    return getRuleName() != null ? getRuleName().equals(that.getRuleName()) : that.getRuleName() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getJarPath().hashCode();
+    result = 31 * result + getClassName().hashCode();
+    result = 31 * result + (getMethodName() != null ? getMethodName().hashCode() : 0);
+    result = 31 * result + (getFieldName() != null ? getFieldName().hashCode() : 0);
+    result = 31 * result + (getRuleName() != null ? getRuleName().hashCode() : 0);
+    result = 31 * result + getLineNumber();
+    return result;
+  }
 }
