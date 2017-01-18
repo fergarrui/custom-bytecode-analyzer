@@ -37,7 +37,7 @@ public class CustomClassInterfacesVisitor extends CustomAbstractVisitor {
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     logger.trace("visit class: version={} access={} name={} signature={} superName={} interfaces={}", version, access, name, signature, superName, interfaces);
     if (validInterfaces(Arrays.asList(interfaces), ruleInterfaces)) {
-      ReportItem reportItem = new ReportItem(-1, null,null, getRuleName());
+      ReportItem reportItem = new ReportItem(-1, null,null, getRuleName(), showInReport());
       this.setIssueFound(true);
       this.itemsFound().add(reportItem);
     }

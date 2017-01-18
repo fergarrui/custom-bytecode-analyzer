@@ -35,7 +35,7 @@ public class CustomClassSuperClassVisitor extends CustomAbstractVisitor {
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     logger.trace("visit class: version={} access={} name={} signature={} superName={} interfaces={}", version, access, name, signature, superName, interfaces);
     if (superName.equals(StringsHelper.dotsToSlashes(superClass))) {
-      ReportItem reportItem = new ReportItem(-1, null,null, getRuleName());
+      ReportItem reportItem = new ReportItem(-1, null,null, getRuleName(), showInReport());
       this.setIssueFound(true);
       this.itemsFound().add(reportItem);
     }

@@ -271,7 +271,7 @@ Please note that ```interfaces``` is an *array*, so make sure you add the string
 #### Find Spring endpoints
 
 Annotations are also supported. Multiple annotations properties can be defined in a rule. If all of them are found in the analyzed class, it will be reported.
-It is going to search classes and method annotations.
+It is going to search classes, method and parameters annotations.
 For example, if we want to find Spring endpoints, we would search for classes or methods annotated with ```org.springframework.web.bind.annotation.RequestMapping```. So, the rule can be:
 
 ```
@@ -306,7 +306,7 @@ The property ```rule.fields``` can be used to find class fields. If we want to f
 
 #### Find variables
 
-To find variables, ```rule.variables``` can be used. This rule will report local variables and method arguments variables.
+To find variables, ```rule.variables``` can be used. This property will report local variables and method arguments variables.
 If we want to find all variables of type ```javax.servlet.http.Part```, a rule could be:
 
 ```

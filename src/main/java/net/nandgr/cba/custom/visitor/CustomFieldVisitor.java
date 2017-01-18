@@ -37,7 +37,7 @@ public class CustomFieldVisitor extends CustomAbstractVisitor {
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
     logger.trace("visitField: access={}, name={}, desc={}, signature={}, value={}", access, name, desc, signature, value);
     if (RuleHelper.isValidField(field, access, name, desc, signature, value)) {
-      ReportItem reportItem = new ReportItem(-1,null, name, getRuleName());
+      ReportItem reportItem = new ReportItem(-1,null, name, getRuleName(), showInReport());
       setIssueFound(true);
       itemsFound().add(reportItem);
     }

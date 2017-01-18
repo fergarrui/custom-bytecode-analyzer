@@ -50,13 +50,24 @@ public class CustomMethodAnnotationVisitor extends MethodVisitor {
   }
 
   @Override
+  public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
+    logger.trace("visitParameterAnnotation: parameter={}, desc={}, visible={}",parameter, desc, visible);
+    checkValidAnnotation(desc);
+    return super.visitParameterAnnotation(parameter, desc, visible);
+  }
+
+  @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     logger.trace("visitAnnotation: desc={}, visible={}", desc, visible);
+    checkValidAnnotation(desc);
+    return super.visitAnnotation(desc, visible);
+  }
+
+  private void checkValidAnnotation(String desc) {
     if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotation.getType()))) {
-      ReportItem reportItem = new ReportItem(lineNumber, methodName, null, parentVisitor.getRuleName());
+      ReportItem reportItem = new ReportItem(lineNumber, methodName, null, parentVisitor.getRuleName(), parentVisitor.showInReport());
       parentVisitor.setIssueFound(true);
       parentVisitor.itemsFound().add(reportItem);
     }
-    return super.visitAnnotation(desc, visible);
   }
 }

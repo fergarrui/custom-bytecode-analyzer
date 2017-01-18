@@ -42,7 +42,11 @@ public class RuleVisitorsAnalyzer {
       if (!meetsAllVisitors) {
         return new ArrayList<>();
       }
-      reportItems.addAll(customVisitor.itemsFound());
+      for (ReportItem reportItem : customVisitor.itemsFound()) {
+        if (reportItem.isShowInReport()) {
+          reportItems.add(reportItem);
+        }
+      }
       customVisitor.clear();
     }
     return reportItems;

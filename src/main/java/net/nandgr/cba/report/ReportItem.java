@@ -24,12 +24,14 @@ public class ReportItem {
   private final String fieldName;
   private final String ruleName;
   private final int lineNumber;
+  private final boolean showInReport;
 
-  public ReportItem(int lineNumber, String methodName, String fieldName, String ruleName) {
+  public ReportItem(int lineNumber, String methodName, String fieldName, String ruleName, boolean showInReport) {
     this.lineNumber = lineNumber;
     this.methodName = methodName;
     this.ruleName = ruleName;
     this.fieldName = fieldName;
+    this.showInReport = showInReport;
   }
 
   public String getJarPath() {
@@ -64,6 +66,10 @@ public class ReportItem {
     this.className = className;
   }
 
+  public boolean isShowInReport() {
+    return showInReport;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -72,8 +78,10 @@ public class ReportItem {
     ReportItem that = (ReportItem) o;
 
     if (getLineNumber() != that.getLineNumber()) return false;
-    if (!getJarPath().equals(that.getJarPath())) return false;
-    if (!getClassName().equals(that.getClassName())) return false;
+    if (isShowInReport() != that.isShowInReport()) return false;
+    if (getJarPath() != null ? !getJarPath().equals(that.getJarPath()) : that.getJarPath() != null) return false;
+    if (getClassName() != null ? !getClassName().equals(that.getClassName()) : that.getClassName() != null)
+      return false;
     if (getMethodName() != null ? !getMethodName().equals(that.getMethodName()) : that.getMethodName() != null)
       return false;
     if (getFieldName() != null ? !getFieldName().equals(that.getFieldName()) : that.getFieldName() != null)
@@ -83,12 +91,13 @@ public class ReportItem {
 
   @Override
   public int hashCode() {
-    int result = getJarPath().hashCode();
-    result = 31 * result + getClassName().hashCode();
+    int result = getJarPath() != null ? getJarPath().hashCode() : 0;
+    result = 31 * result + (getClassName() != null ? getClassName().hashCode() : 0);
     result = 31 * result + (getMethodName() != null ? getMethodName().hashCode() : 0);
     result = 31 * result + (getFieldName() != null ? getFieldName().hashCode() : 0);
     result = 31 * result + (getRuleName() != null ? getRuleName().hashCode() : 0);
     result = 31 * result + getLineNumber();
+    result = 31 * result + (isShowInReport() ? 1 : 0);
     return result;
   }
 }

@@ -1,0 +1,38 @@
+{
+  "rules": [{
+    "name": "File upload Java servlet",
+    "variables" : [{
+      "type" : "javax.servlet.http.Part"
+    }]
+  },
+  {
+    "name": "File upload Apache Commons",
+    "variables" : [{
+      "type" : "org.apache.commons.fileupload.FileItem"
+    }]
+  },
+  {
+    "name": "File upload Spring MultiPartFile",
+    "variables" : [{
+      "type" : "org.springframework.web.multipart.MultipartFile"
+    }]
+  },
+  {
+    "name": "File upload Jersey 1",
+    "annotations" : [{
+      "type" : "com.sun.jersey.multipart.FormDataParam"
+    }],
+    "variables" : [{
+        "type" : "com.sun.jersey.core.header.FormDataContentDisposition"
+    }]
+  },
+  {
+    "name": "File upload Jersey 2",
+    "annotations" : [{
+      "type" : "com.sun.jersey.multipart.FormDataParam"
+    }],
+    "variables" : [{
+      "type" : "java.io.InputStream"
+    }]
+  }]
+}

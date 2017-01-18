@@ -124,10 +124,10 @@ public class ReportBuilder {
         new NoTag(lineNumberValue, String.valueOf(reportItemLineNumber));
       }
       String reportMethodName = reportItem.getMethodName();
-      if (reportMethodName.startsWith("<") && reportMethodName.endsWith(">")) {
-        reportMethodName = reportMethodName.substring(1, reportMethodName.length()-1);
-      }
       if (!StringUtils.isBlank(reportMethodName)) {
+        if (reportMethodName.startsWith("<") && reportMethodName.endsWith(">")) {
+          reportMethodName = reportMethodName.substring(1, reportMethodName.length()-1);
+        }
         Tr methodName = new Tr(itemTable);
         Td methodNameKey = new Td(methodName);
         new NoTag(methodNameKey, "Method name: ");

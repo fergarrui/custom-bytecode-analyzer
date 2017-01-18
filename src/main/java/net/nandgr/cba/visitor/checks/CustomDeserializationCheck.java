@@ -35,7 +35,7 @@ public class CustomDeserializationCheck extends CustomAbstractVisitor {
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
     logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
     if (SerializationHelper.isCustomDeserializationMethod(access, name, desc)) {
-      ReportItem reportItem = new ReportItem(-1, name, null, getRuleName());
+      ReportItem reportItem = new ReportItem(-1, name, null, getRuleName(), foundIssue);
       this.foundIssue = true;
       this.itemsFound.add(reportItem);
       logger.debug("Issue found at method - access: {}, name: {}, desc: {}, signature: {}, exceptions: {}", access, name, desc, signature, exceptions);

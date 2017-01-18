@@ -16,12 +16,10 @@
  */
 package net.nandgr.cba.custom.model;
 
-import java.util.List;
-
 public class Annotation {
 
   private String type;
-  private boolean report;
+  private Boolean report;
 
   public String getType() {
     return type;
@@ -31,11 +29,14 @@ public class Annotation {
     this.type = type;
   }
 
-  public boolean isReport() {
+  public Boolean isReport() {
+    if (report == null) {
+      return true;
+    }
     return report;
   }
 
-  public void setReport(boolean report) {
+  public void setReport(Boolean report) {
     this.report = report;
   }
 

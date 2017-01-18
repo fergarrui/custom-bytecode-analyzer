@@ -20,7 +20,7 @@ public class Variable {
 
   private String type;
   private String nameRegex;
-  private boolean report;
+  private Boolean report;
 
   public String getType() {
     return type;
@@ -38,11 +38,14 @@ public class Variable {
     this.nameRegex = nameRegex;
   }
 
-  public boolean isReport() {
+  public Boolean isReport() {
+    if (report == null) {
+      return true;
+    }
     return report;
   }
 
-  public void setReport(boolean report) {
+  public void setReport(Boolean report) {
     this.report = report;
   }
 

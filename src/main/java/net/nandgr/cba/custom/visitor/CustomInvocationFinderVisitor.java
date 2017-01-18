@@ -50,10 +50,8 @@ public class CustomInvocationFinderVisitor extends MethodVisitor {
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
     logger.trace("visitMethodInsn: opcode={} owner={} name={} desc={} itf={}", opcode, owner, name, desc, itf);
     if (RuleHelper.isValidMethodInvocation(methodInvocation, owner, name, desc)) {
-      ReportItem reportItem = new ReportItem(lineNumber, name, null, parentVisitor.getRuleName());
-      if (parentVisitor.showInReport()) {
-        parentVisitor.itemsFound().add(reportItem);
-      }
+      ReportItem reportItem = new ReportItem(lineNumber, name, null, parentVisitor.getRuleName(), parentVisitor.showInReport());
+      parentVisitor.itemsFound().add(reportItem);
       logger.debug("Match found at method invocation - opcode: {}, owner: {}, name: {}, desc: {}, itf: {}", opcode,owner, name, desc);
       parentVisitor.setIssueFound(true);
     }

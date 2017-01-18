@@ -22,7 +22,7 @@ public class Field {
   private String type;
   private String valueRegex;
   private String nameRegex;
-  private boolean report;
+  private Boolean report;
 
   public String getVisibility() {
     return visibility;
@@ -56,11 +56,14 @@ public class Field {
     this.nameRegex = nameRegex;
   }
 
-  public boolean isReport() {
+  public Boolean isReport() {
+    if (report == null) {
+      return true;
+    }
     return report;
   }
 
-  public void setReport(boolean report) {
+  public void setReport(Boolean report) {
     this.report = report;
   }
 

@@ -55,7 +55,7 @@ public class CustomMethodVariableVisitor extends MethodVisitor {
   public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
     logger.trace("VisitLocalVariable: name={}, desc={}, signature={}, start={}, end={}, index={}", name, desc, signature, start, end, index);
     if (!name.contains("this") && isValidVariable(name, desc)) {
-      ReportItem reportItem = new ReportItem(-1, methodName, name, parent.getRuleName());
+      ReportItem reportItem = new ReportItem(-1, methodName, name, parent.getRuleName(), parent.showInReport());
       parent.setIssueFound(true);
       parent.itemsFound().add(reportItem);
     }
