@@ -16,23 +16,30 @@
  */
 package net.nandgr.cba.visitor.checks;
 
+import java.util.List;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.model.Method;
-import net.nandgr.cba.custom.visitor.CustomAbstractVisitor;
-import net.nandgr.cba.custom.visitor.CustomInvocationFinderVisitor;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractVisitor;
+import net.nandgr.cba.custom.visitor.CustomInvocationFinderInsnVisitor;
+import net.nandgr.cba.custom.visitor.helper.RuleHelper;
 import net.nandgr.cba.visitor.checks.util.SerializationHelper;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeserializationCheck extends CustomAbstractVisitor {
+public class DeserializationCheck extends CustomAbstractClassVisitor {
 
   private static final Logger logger = LoggerFactory.getLogger(DeserializationCheck.class);
 
-  private final CustomInvocationFinderVisitor methodVisitor;
   private static final String READ_OBJECT_OWNER = "java/io/ObjectInputStream";
   private static final String READ_OBJECT_NAME = "readObject";
-  private static final String READ_OBJECT_DESCRIPTOR = "java/lang/Object";
+
+  private final Invocation invocation;
 
   public DeserializationCheck() {
     super("DeserializationCheck");
@@ -40,18 +47,47 @@ public class DeserializationCheck extends CustomAbstractVisitor {
     invocation.setOwner(READ_OBJECT_OWNER);
     Method method = new Method();
     method.setName(READ_OBJECT_NAME);
-    method.setParameter(READ_OBJECT_DESCRIPTOR);
     invocation.setMethod(method);
-    this.methodVisitor = new CustomInvocationFinderVisitor(this, invocation);
+    this.invocation = invocation;
   }
 
   @Override
-  public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-    logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
-    if (SerializationHelper.isCustomDeserializationMethod(access, name, desc)) {
-      return super.visitMethod(access, name, desc, signature, exceptions);
+  public void process() {
+    for (MethodNode method : getClassNode().methods) {
+      int methodAccess = method.access;
+      String methodName = method.name;
+      String methodDesc = method.desc;
+      String methodSignature = method.signature;
+      List<String> methodExceptions = method.exceptions;
+      logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", methodAccess, methodName, methodDesc, methodSignature, methodExceptions);
+      if (SerializationHelper.isCustomDeserializationMethod(methodAccess, methodName, methodDesc)) {
+        InsnList instructions = method.instructions;
+        for (int i = 0; i < instructions.size(); i++) {
+          AbstractInsnNode abstractInsnNode = instructions.get(i);
+          if (abstractInsnNode.getType() == AbstractInsnNode.METHOD_INSN) {
+            MethodInsnNode methodInsnNode = (MethodInsnNode) abstractInsnNode;
+            int access = method.access;
+            String name = method.name;
+            String desc = method.desc;
+            String signature = method.signature;
+            List<String> exceptions = method.exceptions;
+            logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
+
+            Method notFrom = invocation.getNotFrom();
+            Method from = invocation.getFrom();
+            if (RuleHelper.checkNotFrom(notFrom, access, name, desc) && RuleHelper.checkFrom(from, access, name, desc)) {
+              CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
+              customInvocationFinderInsnVisitor.setNode(methodInsnNode);
+              customInvocationFinderInsnVisitor.process();
+              if (customInvocationFinderInsnVisitor.issueFound()) {
+                itemsFound().addAll(customInvocationFinderInsnVisitor.itemsFound());
+                setIssueFound(true);
+              }
+            }
+          }
+        }
+      }
     }
-    return methodVisitor;
   }
 
   @Override

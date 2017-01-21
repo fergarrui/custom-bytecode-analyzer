@@ -16,14 +16,21 @@
  */
 package net.nandgr.cba.custom.visitor;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Method;
+import net.nandgr.cba.custom.model.Variable;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
 import net.nandgr.cba.report.ReportItem;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
-import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CustomMethodVisitor extends CustomAbstractVisitor {
+public class CustomMethodVisitor extends CustomAbstractClassVisitor {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomMethodVisitor.class);
   private final Method method;
@@ -34,15 +41,59 @@ public class CustomMethodVisitor extends CustomAbstractVisitor {
   }
 
   @Override
-  public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-    logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
-    if (RuleHelper.isValidMethod(method, access, name, desc)) {
-      ReportItem reportItem = new ReportItem(-1, name, null, getRuleName(), showInReport());
-      this.itemsFound.add(reportItem);
-      logger.debug("Issue found at method - access: {}, name: {}, desc: {}, signature: {}, exceptions: {}", access, name, desc, signature, exceptions);
-      this.foundIssue = true;
+  public void process() {
+    for (MethodNode methodNode : getClassNode().methods) {
+      int access = methodNode.access;
+      String name = methodNode.name;
+      String desc = methodNode.desc;
+      String signature = methodNode.signature;
+      List<String> exceptions = methodNode.exceptions;
+
+      logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
+      List<Annotation> annotations = method.getAnnotations();
+      boolean annotationFound = true;
+      if (annotations != null && !annotations.isEmpty()) {
+        annotationFound = isAnnotationFound(annotations, methodNode);
+      }
+      List<Variable> variables = method.getVariables();
+      boolean variableFound = true;
+      if (variables != null && !variables.isEmpty()) {
+        for (Variable ruleVariable : variables) {
+          variableFound &= RuleHelper.containsVariable(ruleVariable, methodNode.localVariables);
+        }
+      }
+      boolean parameterFound = true;
+      List<String> parameters = method.getParameters();
+      if (parameters != null && !parameters.isEmpty()) {
+        for (String parameterRule : parameters) {
+          parameterFound &= RuleHelper.containsParameter(parameterRule, desc);
+        }
+      }
+
+      if (RuleHelper.isValidMethod(method, access, name) && annotationFound && variableFound && parameterFound) {
+        ReportItem reportItem = new ReportItem(-1, name, null, getRuleName(), showInReport());
+        this.itemsFound.add(reportItem);
+        logger.debug("Issue found at method - access: {}, name: {}, desc: {}, signature: {}, exceptions: {}", access, name, desc, signature, exceptions);
+        this.foundIssue = true;
+      }
     }
-    return super.visitMethod(access, name, desc, signature, exceptions);
+  }
+
+  private boolean isAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {
+    boolean annotationFound = true;
+    List<AnnotationNode> allMethodAnnotations = new ArrayList<>();
+    List<AnnotationNode> invisibleAnnotations = methodNode.invisibleAnnotations;
+    if (invisibleAnnotations != null) {
+      allMethodAnnotations.addAll(invisibleAnnotations);
+    }
+    List<AnnotationNode> visibleAnnotations = methodNode.visibleAnnotations;
+    if (visibleAnnotations != null) {
+      allMethodAnnotations.addAll(visibleAnnotations);
+    }
+    for (Annotation annotationRule : annotationRules) {
+      annotationFound &= RuleHelper.containsAnnotation(annotationRule, allMethodAnnotations);
+    }
+    return annotationFound;
   }
 
   @Override

@@ -16,13 +16,14 @@
  */
 package net.nandgr.cba.custom.visitor;
 
+import net.nandgr.cba.custom.visitor.base.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.tree.ClassNode;
 
 public class RuleVisitorsAnalyzer {
 
@@ -36,8 +37,12 @@ public class RuleVisitorsAnalyzer {
     boolean meetsAllVisitors = true;
     List<ReportItem> reportItems = new ArrayList<>();
     ClassReader classReader = new ClassReader(inputStream);
+    ClassNode classNode = new ClassNode();
+    classReader.accept(classNode,0);
+
     for (CustomVisitor customVisitor : visitorList) {
-      classReader.accept((ClassVisitor) customVisitor,0);
+      customVisitor.setNode(classNode);
+      customVisitor.process();
       meetsAllVisitors &= customVisitor.issueFound();
       if (!meetsAllVisitors) {
         return new ArrayList<>();

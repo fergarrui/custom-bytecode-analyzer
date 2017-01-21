@@ -165,7 +165,7 @@ public class CliArguments {
       Gson gson = new Gson();
       Rules rules = gson.fromJson(json, Rules.class);
       try {
-        RuleHelper.validateRules(rules);
+        rules.validateRules();
       } catch (BadRulesException e) {
         throw new BadArgumentsException("Error when validating custom rules", e);
       }
