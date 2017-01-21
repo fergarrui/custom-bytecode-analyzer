@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Method;
+import net.nandgr.cba.custom.model.Parameter;
 import net.nandgr.cba.custom.model.Variable;
 import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
 import net.nandgr.cba.report.ReportItem;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.LocalVariableAnnotationNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,24 +55,32 @@ public class CustomMethodVisitor extends CustomAbstractClassVisitor {
       List<Annotation> annotations = method.getAnnotations();
       boolean annotationFound = true;
       if (annotations != null && !annotations.isEmpty()) {
-        annotationFound = isAnnotationFound(annotations, methodNode);
+        annotationFound = isMethodAnnotationFound(annotations, methodNode);
       }
       List<Variable> variables = method.getVariables();
       boolean variableFound = true;
+      boolean variableAnnotationFound = true;
       if (variables != null && !variables.isEmpty()) {
         for (Variable ruleVariable : variables) {
           variableFound &= RuleHelper.containsVariable(ruleVariable, methodNode.localVariables);
+          List<Annotation> variableAnnotations = ruleVariable.getAnnotations();
+          if (variableAnnotations !=null && !variableAnnotations.isEmpty()) {
+            variableAnnotationFound &= isLocalVariableAnnotationFound(variableAnnotations, methodNode);
+          }
         }
       }
       boolean parameterFound = true;
-      List<String> parameters = method.getParameters();
+      boolean parameterAnnotationFound = true;
+      List<Parameter> parameters = method.getParameters();
       if (parameters != null && !parameters.isEmpty()) {
-        for (String parameterRule : parameters) {
+        for (Parameter parameterRule : parameters) {
           parameterFound &= RuleHelper.containsParameter(parameterRule, desc);
+          List<Annotation> parameterAnnotations = parameterRule.getAnnotations();
+          parameterAnnotationFound &= isParameterAnnotationFound(parameterAnnotations, methodNode);
         }
       }
 
-      if (RuleHelper.isValidMethod(method, access, name) && annotationFound && variableFound && parameterFound) {
+      if (RuleHelper.isValidMethod(method, access, name) && annotationFound && variableFound && parameterFound && variableAnnotationFound && parameterAnnotationFound) {
         ReportItem reportItem = new ReportItem(-1, name, null, getRuleName(), showInReport());
         this.itemsFound.add(reportItem);
         logger.debug("Issue found at method - access: {}, name: {}, desc: {}, signature: {}, exceptions: {}", access, name, desc, signature, exceptions);
@@ -79,7 +89,52 @@ public class CustomMethodVisitor extends CustomAbstractClassVisitor {
     }
   }
 
-  private boolean isAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {
+  private boolean isParameterAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {
+    boolean annotationFound = true;
+    List<AnnotationNode> allParameterAnnotations = new ArrayList<>();
+    List<AnnotationNode>[] visibleParameterAnnotations = methodNode.visibleParameterAnnotations;
+    if (visibleParameterAnnotations != null && visibleParameterAnnotations.length != 0) {
+      for (List<AnnotationNode> visibleAnnotations : visibleParameterAnnotations) {
+        if (visibleAnnotations != null) {
+          allParameterAnnotations.addAll(visibleAnnotations);
+        }
+      }
+    }
+    List<AnnotationNode>[] inVisibleParameterAnnotations = methodNode.invisibleParameterAnnotations;
+    if (inVisibleParameterAnnotations != null && inVisibleParameterAnnotations.length != 0) {
+      for (List<AnnotationNode> inVisibleAnnotations : inVisibleParameterAnnotations) {
+        if (inVisibleAnnotations != null) {
+          allParameterAnnotations.addAll(inVisibleAnnotations);
+        }
+      }
+    }
+    if (annotationRules != null && !annotationRules.isEmpty()) {
+      for (Annotation annotationRule : annotationRules) {
+        annotationFound &= RuleHelper.containsAnnotation(annotationRule, allParameterAnnotations);
+      }
+    }
+
+    return annotationFound;
+  }
+
+  private boolean isLocalVariableAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {
+    boolean annotationFound = true;
+    List<AnnotationNode> allLocalVariableAnnotations = new ArrayList<>();
+    List<LocalVariableAnnotationNode> invisibleVariableAnnotations = methodNode.invisibleLocalVariableAnnotations;
+    if (invisibleVariableAnnotations != null) {
+      allLocalVariableAnnotations.addAll(invisibleVariableAnnotations);
+    }
+    List<LocalVariableAnnotationNode> visibleVariableAnnotations = methodNode.visibleLocalVariableAnnotations;
+    if (visibleVariableAnnotations != null) {
+      allLocalVariableAnnotations.addAll(visibleVariableAnnotations);
+    }
+    for (Annotation annotationRule : annotationRules) {
+      annotationFound &= RuleHelper.containsAnnotation(annotationRule, allLocalVariableAnnotations);
+    }
+    return annotationFound;
+  }
+
+  private boolean isMethodAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {
     boolean annotationFound = true;
     List<AnnotationNode> allMethodAnnotations = new ArrayList<>();
     List<AnnotationNode> invisibleAnnotations = methodNode.invisibleAnnotations;

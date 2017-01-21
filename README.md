@@ -34,7 +34,6 @@ usage: java -jar cba-cli.jar [OPTIONS] -a DIRECTORY_TO_ANALYZE
 
 Rules file can be specified using ```-f,--custom-file``` argument . The file is in JSON format and has the following structure:
 
-
 * rules : array(rule)
     * name : string
     * fields : array(field)
@@ -48,14 +47,25 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
     * annotations : array(annotation)
         * type : string
         * report : boolean (default: true)
-    * variables : array(variable)
-        * type : string
-        * nameRegex : string (java regular expression)
-        * report (default: true)
     * methods :  array(method)
         * name : string
         * visibility : (public|protected|private)
-        * parameters : array(string)
+        * parameters : array(parameter)
+            * type : string
+            * report : boolean (default: true)
+            * annotations : array(annotation)
+                * type : string
+                * report : boolean (default: true)
+        * variables : array(variable)
+            * type : string
+            * nameRegex : string (java regular expression)
+            * annotations : array(annotation)
+                * type : string
+                * report : boolean (default: true)
+            * report (default: true)
+        * annotations : array(annotation)
+            * type : string
+            * report : boolean (default: true)
         * report : boolean (default: true)
     * invocations : array(invocation)
         * owner : string
@@ -87,11 +97,14 @@ If we need to find classes with custom deserialization, we can do it quite easil
 		"methods": [{
 			"name": "readObject",
 			"visibility": "private",
-			"parameters" : ["java.io.ObjectInputStream"]
+			"parameters" : [{
+         "type" : "java.io.ObjectInputStream"
+      }]
 		}]
 	}]
 }
 ```
+
 It will report methods with ```private``` visibility, ```readObject``` as name and a parameter of type ```java.io.ObjectOutputStream```. Parameters are an array, if more than one is specified, all of them have to match to be reported. Since we only have one rule, a report named: custom-deserialization-0.html will be created.
 
 #### Find custom serialization and deserialization
@@ -100,19 +113,23 @@ In this case, one rule with two methods have to be defined. The same one than in
 
 ```
 {
-    "rules": [{
-        "name": "Custom serialization and deserialization",
-        "methods": [{
-            "name": "readObject",
-            "visibility": "private",
-            "parameters" : ["java.io.ObjectInputStream"]
-        },{
-            "name": "writeObject",
-            "report": "false",
-            "visibility": "private",
-            "parameters" : ["java.io.ObjectOutputStream"]
-        }]
+  "rules": [{
+    "name": "Custom serialization and deserialization",
+    "methods": [{
+      "name": "readObject",
+      "visibility": "private",
+      "parameters" : [{
+       "type" : "java.io.ObjectInputStream"
+      }]
+    },{
+      "name": "writeObject",
+      "report": "false",
+      "visibility": "private",
+      "parameters" : [{
+        "type" : "java.io.ObjectOutputStream"
+      }]
     }]
+  }]
 }
 ```
 
@@ -210,10 +227,8 @@ So we need to find method invocations from ```ObjectInputStream``` named ```read
 			},
 			"notFrom": {
 				"name": "readObject",
-				"visibility": "private",
-				"parameter": "java.io.ObjectInputStream"
-			},
-			"report": true
+				"visibility": "private"
+			}
 		}]
 	}]
 }
@@ -221,12 +236,14 @@ So we need to find method invocations from ```ObjectInputStream``` named ```read
 This file will find ```java.io.ObjectInputStream.readObject()``` invocations if the invocation is not done inside ```private void readObject(ObjectInputStream in)``` method.
 
 A class compiled with this code will not be reported:
+
 ```
 private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
       Object o = in.readObject();
 }
 ```
 But this one will be reported:
+
 ```
 public Object deserializeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
       Object o = in.readObject();
@@ -336,7 +353,9 @@ Multiple rules can be defined in the same JSON file. They will be processed and 
 		"methods": [{
 			"name": "readObject",
 			"visibility": "private",
-			"parameter": "java.io.ObjectOutputStream"
+			"parameters": [{
+        "type" : "java.io.ObjectInputStream"
+      }]
 		}]
 	},{
 		"name": "Method invocation by reflection",

@@ -24,6 +24,7 @@ import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.model.Method;
+import net.nandgr.cba.custom.model.Parameter;
 import net.nandgr.cba.custom.model.Variable;
 import org.apache.commons.lang.StringUtils;
 import org.objectweb.asm.Opcodes;
@@ -119,14 +120,14 @@ public class RuleHelper {
   public static boolean containsAnnotation(Annotation annotationRule, List<AnnotationNode> annotationNodes) {
     for (AnnotationNode annotationNode : annotationNodes) {
       String desc = annotationNode.desc;
-      logger.trace("containsAnnotation : annotationRule={}, annotationNode={}", annotationRule, annotationNode );
-      if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotationRule.getType())));
+      if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotationRule.getType()))) {
         return true;
+      }
     }
     return false;
   }
 
-  public static boolean containsParameter(String parameterRule, String desc) {
+  public static boolean containsParameter(Parameter parameterRule, String desc) {
     Type[] parameters = Type.getArgumentTypes(desc);
     logger.trace("containsParameter: parameterRule={}, desc={}");
     if (parameters == null) {
@@ -134,7 +135,7 @@ public class RuleHelper {
     }
     for (Type parameter : parameters) {
       logger.trace("parameter={}", parameter.getClassName());
-      if(parameterRule.equals(parameter.getClassName())) {
+      if(parameterRule.getType() == null || parameterRule.getType().equals(parameter.getClassName())) {
         return true;
       }
     }
@@ -189,14 +190,14 @@ public class RuleHelper {
     return 0;
   }
 
-  public static boolean checkNotFrom(Method notFrom, int access, String name, String desc) {
+  public static boolean checkNotFrom(Method notFrom, int access, String name) {
     if (notFrom == null) {
       return true;
     }
     return !RuleHelper.isValidMethod(notFrom, access, name);
   }
 
-  public static boolean checkFrom(Method from, int access, String name, String desc) {
+  public static boolean checkFrom(Method from, int access, String name) {
     if (from == null) {
       return true;
     }

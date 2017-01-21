@@ -18,53 +18,18 @@ package net.nandgr.cba.custom.model;
 
 import java.util.List;
 
-public class Method {
+public class Parameter {
 
-  private String name;
-  private String visibility;
-  private List<Parameter> parameters;
-  private List<Variable> variables;
+  private String type;
   private List<Annotation> annotations;
   private Boolean report;
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getVisibility() {
-    return visibility;
-  }
-
-  public void setVisibility(String visibility) {
-    this.visibility = visibility;
-  }
-
-  public List<Parameter> getParameters() {
-    return parameters;
-  }
-
-  public void setParameters(List<Parameter> parameters) {
-    this.parameters = parameters;
-  }
-
-  public List<Variable> getVariables() {
-    return variables;
-  }
-
-  public void setVariables(List<Variable> variables) {
-    this.variables = variables;
+  public String getType() {
+    return type;
   }
 
   public List<Annotation> getAnnotations() {
     return annotations;
-  }
-
-  public void setAnnotations(List<Annotation> annotations) {
-    this.annotations = annotations;
   }
 
   public Boolean isReport() {
@@ -74,17 +39,22 @@ public class Method {
     return report;
   }
 
-  public void setReport(Boolean report) {
-    this.report = report;
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public void setAnnotations(List<Annotation> annotations) {
+    this.annotations = annotations;
+  }
+
+  public Boolean getReport() {
+    return report;
   }
 
   @Override
   public String toString() {
-    return "Method{" +
-            "name='" + name + '\'' +
-            ", visibility='" + visibility + '\'' +
-            ", parameters=" + parameters +
-            ", variables=" + variables +
+    return "Parameter{" +
+            "type='" + type + '\'' +
             ", annotations=" + annotations +
             ", report=" + report +
             '}';

@@ -75,7 +75,7 @@ public class DeserializationCheck extends CustomAbstractClassVisitor {
 
             Method notFrom = invocation.getNotFrom();
             Method from = invocation.getFrom();
-            if (RuleHelper.checkNotFrom(notFrom, access, name, desc) && RuleHelper.checkFrom(from, access, name, desc)) {
+            if (RuleHelper.checkNotFrom(notFrom, access, name) && RuleHelper.checkFrom(from, access, name)) {
               CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
               customInvocationFinderInsnVisitor.setNode(methodInsnNode);
               customInvocationFinderInsnVisitor.process();
