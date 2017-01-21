@@ -1,38 +1,7 @@
 {
   "rules": [{
-    "name": "Java servlets",
-    "superClass" : "javax.servlet.http.HttpServlet"
-  },
-  {
-    "name": "Spring endpoint",
-    "annotations" : [{
-      "type" : "org.springframework.web.bind.annotation.RequestMapping"
-    }]
-  },
-  {
-    "name": "Struts1 endpoint",
-    "superClass" : "org.apache.struts.action.Action"
-  },
-  {
-    "name": "JAX-RS Endpoint",
-    "annotations" : [{
-      "type" : "javax.ws.rs.Path"
-    }]
-  },
-  {
-    "name": "JAX-WS endpoint",
-    "annotations" : [{
-      "type" : "javax.jws.WebMethod"
-    }]
-  },
-  {
-    "name": "Response Redirect",
-    "invocations": [{
-      "owner": "javax.servlet.http.HttpServletResponse",
-      "method": {
-        "name": "sendRedirect"
-      }
-    }]
+    "name": "Custom Message Digest",
+    "superClass" : "java.security.MessageDigest"
   },
   {
     "name": "Deserialization usage",
@@ -43,86 +12,172 @@
       },
       "notFrom": {
         "name": "readObject",
-        "visibility": "private",
-        "parameter": "java.io.ObjectInputStream"
+        "visibility": "private"
       }
     }]
   },
-  {
-    "name": "Request Headers use",
-    "invocations": [{
-      "owner": "javax.servlet.http.HttpServletRequest",
-      "method": {
-        "name": "getHeader"
-      }
-    }]
-  },
-  {
-    "name": "Request Headers use (cookies)",
-    "invocations": [{
-      "owner": "javax.servlet.http.HttpServletRequest",
-      "method": {
-        "name": "getCookies"
-      }
-    }]
-  },
-  {
-    "name": "X509TrustManager implementation",
-    "interfaces" : ["javax.net.ssl.X509TrustManager"]
-  },
-  {
-    "name": "File creation - java.io.File",
-    "invocations": [{
-      "owner": "java.io.File",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  },
-  {
-    "name": "File creation - java.io.FileInputStream",
-    "invocations": [{
-      "owner": "java.io.File",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  },
-  {
-    "name": "File creation - java.io.FileReader",
-    "invocations": [{
-      "owner": "java.io.FileReader",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  },
-  {
-    "name": "File creation - java.io.RandomAccessFile",
-    "invocations": [{
-      "owner": "java.io.RandomAccessFile",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  },
-  {
-    "name": "File creation - java.io.FileWriter",
-    "invocations": [{
-      "owner": "java.io.FileWriter",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  },
-  {
-    "name": "File creation - java.io.FileOutputStream",
-    "invocations": [{
-      "owner": "java.io.FileOutputStream",
-      "method": {
-        "name": "<init>"
-      }
-    }]
-  }
+    {
+      "name": "File creation - java.io.File",
+      "invocations": [{
+        "owner": "java.io.File",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File creation - java.io.FileInputStream",
+      "invocations": [{
+        "owner": "java.io.File",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File creation - java.io.FileReader",
+      "invocations": [{
+        "owner": "java.io.FileReader",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File creation - java.io.RandomAccessFile",
+      "invocations": [{
+        "owner": "java.io.RandomAccessFile",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File creation - java.io.FileWriter",
+      "invocations": [{
+        "owner": "java.io.FileWriter",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File creation - java.io.FileOutputStream",
+      "invocations": [{
+        "owner": "java.io.FileOutputStream",
+        "method": {
+          "name": "<init>"
+        }
+      }]
+    },
+    {
+      "name": "File upload Java servlet",
+      "methods" : [{
+        "variables" : [{
+          "type" : "javax.servlet.http.Part"
+        }]
+      }]
+    },
+    {
+      "name": "File upload Apache Commons",
+      "methods" : [{
+        "variables" : [{
+          "type" : "org.apache.commons.fileupload.FileItem"
+        }]
+      }]
+    },
+    {
+      "name": "File upload Spring MultiPartFile",
+      "methods" : [{
+        "variables" : [{
+          "type": "org.springframework.web.multipart.MultipartFile"
+        }]
+      }]
+    },
+    {
+      "name": "File upload Jersey",
+      "methods" : [{
+        "parameters" : [{
+          "annotations" : [{
+            "type" : "com.sun.jersey.multipart.FormDataParam"
+          }]
+        }]
+      }]
+    },
+    {
+      "name": "Request Headers use",
+      "invocations": [{
+        "owner": "javax.servlet.http.HttpServletRequest",
+        "method": {
+          "name": "getHeader"
+        }
+      }]
+    },
+    {
+      "name": "Request Headers use (cookies)",
+      "invocations": [{
+        "owner": "javax.servlet.http.HttpServletRequest",
+        "method": {
+          "name": "getCookies"
+        }
+      }]
+    },
+    {
+      "name": "Java servlets",
+      "superClass" : "javax.servlet.http.HttpServlet"
+    },
+    {
+      "name": "JAX-RS Endpoint",
+      "annotations" : [{
+        "type" : "javax.ws.rs.Path"
+      }]
+    },
+    {
+      "name": "JAX-RS Endpoint",
+      "methods" : [{
+        "annotations" : [{
+          "type" : "javax.ws.rs.Path"
+        }]
+      }]
+    },
+    {
+      "name": "JAX-WS endpoint",
+      "methods" : [{
+        "annotations" : [{
+          "type" : "javax.jws.WebMethod"
+        }]
+      }]
+    },
+    {
+      "name": "Response Redirect",
+      "invocations": [{
+        "owner": "javax.servlet.http.HttpServletResponse",
+        "method": {
+          "name": "sendRedirect"
+        }
+      }]
+    },
+    {
+      "name": "Spring endpoint - class annotation",
+      "annotations" : [{
+        "type" : "org.springframework.web.bind.annotation.RequestMapping"
+      }]
+    },
+    {
+      "name": "Spring endpoint - method annotation",
+      "methods" : [{
+        "annotations" : [{
+          "type" : "org.springframework.web.bind.annotation.RequestMapping"
+        }]
+      }]
+    },
+    {
+      "name": "Struts1 endpoint",
+      "superClass" : "org.apache.struts.action.Action"
+    },
+    {
+      "name": "X509TrustManager implementation",
+      "interfaces" : ["javax.net.ssl.X509TrustManager"]
+    }
   ]
 }

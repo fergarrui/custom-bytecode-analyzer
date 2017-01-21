@@ -8,8 +8,7 @@
       },
       "notFrom": {
         "name": "readObject",
-        "visibility": "private",
-        "parameter": "java.io.ObjectInputStream"
+        "visibility": "private"
       }
     }]
   }]

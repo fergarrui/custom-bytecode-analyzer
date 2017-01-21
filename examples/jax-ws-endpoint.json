@@ -1,8 +1,10 @@
 {
   "rules": [{
     "name": "JAX-WS endpoint",
-    "annotations" : [{
-      "type" : "javax.jws.WebMethod"
+    "methods" : [{
+      "annotations" : [{
+        "type" : "javax.jws.WebMethod"
+      }]
     }]
   }]
 }

@@ -369,7 +369,7 @@ Multiple rules can be defined in the same JSON file. They will be processed and 
 }
 ```
 
-Here, we have two rules ("Custom deserialization" and "Method invocation by reflection"). They will be processed as if you do it in two separated executions. And a report per rule will be generated.
+Here, we have two rules ("Custom deserialization" and "Method invocation by reflection"). They will be processed as if you do it in two separated executions. And a report per rule will be generated. If the rules have the same name, they will be reported in the same file.
 
 ## Custom Java rules
 

@@ -4,5 +4,13 @@
     "annotations" : [{
       "type" : "javax.ws.rs.Path"
     }]
+  },
+  {
+    "name": "JAX-RS Endpoint",
+    "methods" : [{
+      "annotations" : [{
+        "type" : "javax.ws.rs.Path"
+      }]
+    }]
   }]
 }

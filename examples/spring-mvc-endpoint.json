@@ -1,8 +1,16 @@
 {
   "rules": [{
-    "name": "Spring endpoint",
+    "name": "Spring endpoint - class annotation",
     "annotations" : [{
       "type" : "org.springframework.web.bind.annotation.RequestMapping"
     }]
-  }]
+  },
+    {
+      "name": "Spring endpoint - method annotation",
+      "methods" : [{
+        "annotations" : [{
+          "type" : "org.springframework.web.bind.annotation.RequestMapping"
+        }]
+      }]
+    }]
 }
