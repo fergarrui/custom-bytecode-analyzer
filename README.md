@@ -305,7 +305,8 @@ The property ```rule.fields``` can be used to find class fields. If we want to f
       }
     ]
   }]
-}```
+}
+```
 
 #### Find variables
 
