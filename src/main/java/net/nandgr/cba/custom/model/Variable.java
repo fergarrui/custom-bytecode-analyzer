@@ -16,10 +16,13 @@
  */
 package net.nandgr.cba.custom.model;
 
+import java.util.List;
+
 public class Variable {
 
   private String type;
   private String nameRegex;
+  private List<Annotation> annotations;
   private Boolean report;
 
   public String getType() {
@@ -38,6 +41,14 @@ public class Variable {
     this.nameRegex = nameRegex;
   }
 
+  public List<Annotation> getAnnotations() {
+    return annotations;
+  }
+
+  public void setAnnotations(List<Annotation> annotations) {
+    this.annotations = annotations;
+  }
+
   public Boolean isReport() {
     if (report == null) {
       return true;
@@ -54,6 +65,7 @@ public class Variable {
     return "Variable{" +
             "type='" + type + '\'' +
             ", nameRegex='" + nameRegex + '\'' +
+            ", annotations=" + annotations +
             ", report=" + report +
             '}';
   }

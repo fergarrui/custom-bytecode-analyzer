@@ -55,29 +55,26 @@ Rules file can be specified using ```-f,--custom-file``` argument . The file is 
     * methods :  array(method)
         * name : string
         * visibility : (public|protected|private)
-        * parameter : string (only one parameter is supported at the moment)
+        * parameters : array(string)
         * report : boolean (default: true)
     * invocations : array(invocation)
         * owner : string
         * method : method
             * name : string
             * visibility : (public|protected|private)
-            * parameter : string (only one parameter is supported at the moment)
         * from : method
             * name : string
             * visibility : (public|protected|private)
-            * parameter : string (only one parameter is supported at the moment)
         * notFrom : method
             * name : string
             * visibility : (public|protected|private)
-            * parameter : string (only one parameter is supported at the moment)
         * report : boolean (default:true)
 
 You can also check ```net.nandgr.cba.custom.model.Rules.java``` to see the structure in Java code.
 
 ### Examples
 
-There are already several examples under the directory [examples](https://github.com/fergarrui/custom-bytecode-analyzer/tree/master/examples) .
+There are already several rules under the directory [examples](https://github.com/fergarrui/custom-bytecode-analyzer/tree/master/examples) .
 Anyway, below are listed examples for every rule.
 
 #### Find custom deserialization
@@ -90,12 +87,12 @@ If we need to find classes with custom deserialization, we can do it quite easil
 		"methods": [{
 			"name": "readObject",
 			"visibility": "private",
-			"parameter": "java.io.ObjectOutputStream"
+			"parameters" : ["java.io.ObjectInputStream"]
 		}]
 	}]
 }
 ```
-It will report methods with ```private``` visibility, ```readObject``` as name and a parameter of type ```java.io.ObjectOutputStream```. Since we only have one rule, a report named: custom-deserialization-0.html will be created.
+It will report methods with ```private``` visibility, ```readObject``` as name and a parameter of type ```java.io.ObjectOutputStream```. Parameters are an array, if more than one is specified, all of them have to match to be reported. Since we only have one rule, a report named: custom-deserialization-0.html will be created.
 
 #### Find custom serialization and deserialization
 
@@ -103,23 +100,23 @@ In this case, one rule with two methods have to be defined. The same one than in
 
 ```
 {
-	"rules": [{
-		"name": "Custom serialization and deserialization",
-		"methods": [{
-			"name": "readObject",
-			"visibility": "private",
-			"parameter": "java.io.ObjectOutputStream"
-		},{
-			"name": "writeObject",
-			"report": "false",
-			"visibility": "private",
-			"parameter": "java.io.ObjectOutputStream"
-		}]
-	}]
+    "rules": [{
+        "name": "Custom serialization and deserialization",
+        "methods": [{
+            "name": "readObject",
+            "visibility": "private",
+            "parameters" : ["java.io.ObjectInputStream"]
+        },{
+            "name": "writeObject",
+            "report": "false",
+            "visibility": "private",
+            "parameters" : ["java.io.ObjectOutputStream"]
+        }]
+    }]
 }
 ```
 
-The property ```report``` was set to false to avoid reporting twice for the same rule. We are using the second method just as a condition, but reporting only ```readObject``` methods should be enough for the example purpose.
+The property ```report``` was set to false to avoid reporting twice for the same rule. We are using the second method just as a condition, but reporting only ```readObject``` methods should be enough for the purpose of this rule.
 
 #### Find all method definitions
 If a property is not defined, it will always match as true. For example, this rule would return all methods definitions:
@@ -270,17 +267,24 @@ Please note that ```interfaces``` is an *array*, so make sure you add the string
 
 #### Find Spring endpoints
 
-Annotations are also supported. Multiple annotations properties can be defined in a rule. If all of them are found in the analyzed class, it will be reported.
-It is going to search classes, method and parameters annotations.
+Annotations are also supported. Multiple annotations properties can be defined in a rule (finding class annotations), in methods o variables (parameters or local variables). If all of them are found in the analyzed class, it will be reported.
 For example, if we want to find Spring endpoints, we would search for classes or methods annotated with ```org.springframework.web.bind.annotation.RequestMapping```. So, the rule can be:
 
 ```
 {
   "rules": [{
-    "name": "Spring endpoints",
+    "name": "Spring endpoint - class annotation",
     "annotations" : [{
       "type" : "org.springframework.web.bind.annotation.RequestMapping"
     }]
+  },
+  {
+     "name": "Spring endpoint - method annotation",
+     "methods" : [{
+        "annotations" : [{
+          "type" : "org.springframework.web.bind.annotation.RequestMapping"
+        }]
+      }]
   }]
 }
 ```
@@ -296,13 +300,12 @@ The property ```rule.fields``` can be used to find class fields. If we want to f
     "fields" : [
       {
         "visibility" : "private",
-        "type" : "java.lang.String"
+        "type" : "java.lang.String",
         "nameRegex" : "(password|pass|psswd|passwd)"
       }
-]
+    ]
   }]
-}
-```
+}```
 
 #### Find variables
 
@@ -313,8 +316,10 @@ If we want to find all variables of type ```javax.servlet.http.Part```, a rule c
 {
   "rules": [{
     "name" : "Servlet upload file",
-    "variables" : [{
-        "type" : "javax.servlet.http.Part"
+    "methods" : [{
+      "variables" : [{
+          "type" : "javax.servlet.http.Part"
+      }]
     }]
   }]
 }
@@ -348,7 +353,7 @@ Here, we have two rules ("Custom deserialization" and "Method invocation by refl
 
 ## Custom Java rules
 
-The project can be downloaded and built to add more complex custom rules in Java code that are not covered by the JSON format. There are already three examples under the package ```net.nandgr.cba.visitor.checks```. Those are ```CustomDeserializationCheck, DeserializationCheck and InvokeMethodCheck```. You can create your own rules by extending ```net.nandgr.cba.custom.visitor.CustomAbstractVisitor```. ```CustomAbstractVisitor``` is extending [ASM](http://asm.ow2.org/) ```org.objectweb.asm.ClassVisitor```, so plenty of documentation can be found in the internet about it.
+The project can be downloaded and built to add more complex custom rules in Java code that are not covered by the JSON format. There are already three examples under the package ```net.nandgr.cba.visitor.checks```. Those are ```CustomDeserializationCheck, DeserializationCheck and InvokeMethodCheck```. You can create your own rules by extending ```net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor```.
 
 ## Command line examples
 

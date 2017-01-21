@@ -16,11 +16,15 @@
  */
 package net.nandgr.cba.custom.model;
 
+import java.util.List;
+
 public class Method {
 
   private String name;
   private String visibility;
-  private String parameter;
+  private List<String> parameters;
+  private List<Variable> variables;
+  private List<Annotation> annotations;
   private Boolean report;
 
   public String getName() {
@@ -39,12 +43,28 @@ public class Method {
     this.visibility = visibility;
   }
 
-  public String getParameter() {
-    return parameter;
+  public List<String> getParameters() {
+    return parameters;
   }
 
-  public void setParameter(String parameter) {
-    this.parameter = parameter;
+  public void setParameters(List<String> parameters) {
+    this.parameters = parameters;
+  }
+
+  public List<Variable> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(List<Variable> variables) {
+    this.variables = variables;
+  }
+
+  public List<Annotation> getAnnotations() {
+    return annotations;
+  }
+
+  public void setAnnotations(List<Annotation> annotations) {
+    this.annotations = annotations;
   }
 
   public Boolean isReport() {
@@ -63,7 +83,9 @@ public class Method {
     return "Method{" +
             "name='" + name + '\'' +
             ", visibility='" + visibility + '\'' +
-            ", parameter='" + parameter + '\'' +
+            ", parameters=" + parameters +
+            ", variables=" + variables +
+            ", annotations=" + annotations +
             ", report=" + report +
             '}';
   }

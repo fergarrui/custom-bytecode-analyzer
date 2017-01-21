@@ -16,17 +16,20 @@
  */
 package net.nandgr.cba.custom.visitor.helper;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.model.Method;
-import net.nandgr.cba.custom.model.Rule;
-import net.nandgr.cba.custom.model.Rules;
-import net.nandgr.cba.exception.BadRulesException;
+import net.nandgr.cba.custom.model.Variable;
 import org.apache.commons.lang.StringUtils;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,45 +41,15 @@ public class RuleHelper {
     throw new IllegalAccessError("Cannot instantiate this utility class.");
   }
 
-  public static void validateRules(Rules rules) throws BadRulesException {
-    for (Rule rule : rules.getRules()) {
-      if (StringUtils.isBlank(rule.getName())) {
-        throw new BadRulesException("Rule name cannot be blank.");
-      }
-      validateRule(rule);
-    }
-  }
 
-  private static void validateRule(Rule rule) throws BadRulesException {
-    if (rule.getInvocations() != null) {
-      for (Invocation invocation : rule.getInvocations()) {
-        Method notFrom = invocation.getNotFrom();
-        if (allEmpty(notFrom)) {
-          throw new BadRulesException("\"invocation.notFrom\" property cannot have all the fields blank.");
-        }
-        Method from = invocation.getFrom();
-        if (allEmpty(from)) {
-          throw new BadRulesException("\"invocation.from\" property cannot have all the fields blank.");
-        }
-        if (notFrom != null && from != null) {
-          throw new BadRulesException("\"invocation.notFrom\" and \"invocation.from\" cannot be defined at the same time in the same rule.");
-        }
-        Method method = invocation.getMethod();
-        if (allEmpty(method)) {
-          throw new BadRulesException("\"invocation.method\" property cannot have all the fields blank.");
-        }
-      }
-    }
-  }
-
-  private static boolean allEmpty(Method method) {
+  public static boolean allEmpty(Method method) {
     if (method == null) {
       return false;
     }
-    return StringUtils.isBlank(method.getName()) && StringUtils.isBlank(method.getParameter()) && StringUtils.isBlank(method.getVisibility());
+    return StringUtils.isBlank(method.getName()) && method.getParameters() == null && StringUtils.isBlank(method.getVisibility());
   }
 
-  public static boolean isValidMethod(Method method, int access, String name, String desc) {
+  public static boolean isValidMethod(Method method, int access, String name) {
     boolean isValid = true;
     String methodVisibility = method.getVisibility();
     if (methodVisibility != null) {
@@ -87,10 +60,7 @@ public class RuleHelper {
     if (methodName != null) {
       isValid &= methodName.equals(name);
     }
-    String parameter = method.getParameter();
-    if (parameter != null) {
-      isValid &= desc.contains(StringsHelper.dotsToSlashes(parameter));
-    }
+    logger.trace("isValidMethod: {} - method={}, access={}, name={}", isValid, method, access, name );
     return isValid;
   }
 
@@ -98,12 +68,13 @@ public class RuleHelper {
     boolean isValid = true;
     Method invocationMethod = invocation.getMethod();
     if (invocationMethod != null) {
-      isValid &= isValidMethod(invocationMethod, 0, name, desc );
+      isValid &= isValidMethod(invocationMethod, 0, name );
     }
     String invocationOwner = invocation.getOwner();
     if (invocationOwner != null) {
       isValid &= owner.equals(StringsHelper.dotsToSlashes(invocationOwner));
     }
+    logger.trace("isValidMethodInvocation: {} - invocation={}, owner={}, name={}, desc={}", isValid, invocation, owner, name, desc);
     return isValid;
   }
 
@@ -141,6 +112,67 @@ public class RuleHelper {
         throw e;
       }
     }
+    logger.trace("isValidField : {} - field={}, access={}, name={}, desc={}, signature={}, value={}", isValid, field, access, name, desc, signature, value);
+    return isValid;
+  }
+
+  public static boolean containsAnnotation(Annotation annotationRule, List<AnnotationNode> annotationNodes) {
+    for (AnnotationNode annotationNode : annotationNodes) {
+      String desc = annotationNode.desc;
+      logger.trace("containsAnnotation : annotationRule={}, annotationNode={}", annotationRule, annotationNode );
+      if (StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotationRule.getType())));
+        return true;
+    }
+    return false;
+  }
+
+  public static boolean containsParameter(String parameterRule, String desc) {
+    Type[] parameters = Type.getArgumentTypes(desc);
+    logger.trace("containsParameter: parameterRule={}, desc={}");
+    if (parameters == null) {
+      return false;
+    }
+    for (Type parameter : parameters) {
+      logger.trace("parameter={}", parameter.getClassName());
+      if(parameterRule.equals(parameter.getClassName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean containsVariable(Variable variableRule, List<LocalVariableNode> variableNodes) {
+    logger.trace("containsVariable: variableRule={}, variableNodes={}", variableRule, variableNodes);
+    if (variableNodes == null) {
+      return false;
+    }
+    for (LocalVariableNode variableNode : variableNodes) {
+      String name = variableNode.name;
+      String desc = variableNode.desc;
+      if (!name.contains("this") && isValidVariable(variableRule, name, desc)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean isValidVariable(Variable variable, String name, String desc) {
+    logger.trace("isValidVariable : variable={}, name={}, desc={}", variable, name, desc);
+    boolean isValid = true;
+    String type = variable.getType();
+    if (!StringUtils.isBlank(type)) {
+      isValid &= desc.contains(StringsHelper.dotsToSlashes(variable.getType()));
+    }
+    String nameRegex = variable.getNameRegex();
+    if (!StringUtils.isBlank(nameRegex)) {
+      try {
+        Pattern pattern = Pattern.compile(nameRegex);
+        Matcher matcher = pattern.matcher(name);
+        isValid &= matcher.matches();
+      } catch (PatternSyntaxException e) {
+        throw e;
+      }
+    }
     return isValid;
   }
 
@@ -155,5 +187,19 @@ public class RuleHelper {
       return Opcodes.ACC_PRIVATE;
     }
     return 0;
+  }
+
+  public static boolean checkNotFrom(Method notFrom, int access, String name, String desc) {
+    if (notFrom == null) {
+      return true;
+    }
+    return !RuleHelper.isValidMethod(notFrom, access, name);
+  }
+
+  public static boolean checkFrom(Method from, int access, String name, String desc) {
+    if (from == null) {
+      return true;
+    }
+    return RuleHelper.isValidMethod(from, access, name);
   }
 }

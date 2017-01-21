@@ -17,13 +17,14 @@
 package net.nandgr.cba.custom.visitor;
 
 import net.nandgr.cba.custom.model.Field;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
 import net.nandgr.cba.report.ReportItem;
-import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.tree.FieldNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CustomFieldVisitor extends CustomAbstractVisitor {
+public class CustomFieldVisitor extends CustomAbstractClassVisitor {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomFieldVisitor.class);
   private final Field field;
@@ -34,14 +35,22 @@ public class CustomFieldVisitor extends CustomAbstractVisitor {
   }
 
   @Override
-  public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-    logger.trace("visitField: access={}, name={}, desc={}, signature={}, value={}", access, name, desc, signature, value);
-    if (RuleHelper.isValidField(field, access, name, desc, signature, value)) {
-      ReportItem reportItem = new ReportItem(-1,null, name, getRuleName(), showInReport());
-      setIssueFound(true);
-      itemsFound().add(reportItem);
+  public void process() {
+    boolean issueFound = true;
+    for (FieldNode fieldNode : getClassNode().fields) {
+      int access = fieldNode.access;
+      String name = fieldNode.name;
+      String desc = fieldNode.desc;
+      String signature = fieldNode.signature;
+      Object value = fieldNode.value;
+      logger.trace("visitField: access={}, name={}, desc={}, signature={}, value={}", access, name, desc, signature, value);
+      issueFound = RuleHelper.isValidField(field, access, name, desc, signature, value);
+      if (issueFound) {
+        ReportItem reportItem = new ReportItem(-1,null, name, getRuleName(), showInReport());
+        itemsFound().add(reportItem);
+      }
     }
-    return super.visitField(access, name, desc, signature, value);
+    setIssueFound(issueFound);
   }
 
   @Override

@@ -18,6 +18,10 @@ package net.nandgr.cba.custom.model;
 
 import java.util.Arrays;
 import java.util.List;
+import net.nandgr.cba.exception.BadRulesException;
+import org.apache.commons.lang.StringUtils;
+
+import static net.nandgr.cba.custom.visitor.helper.RuleHelper.allEmpty;
 
 public class Rules {
 
@@ -36,5 +40,37 @@ public class Rules {
     return "Rules{" +
             "rules=" + Arrays.toString(rules.toArray()) +
             '}';
+  }
+
+  public void validateRules() throws BadRulesException {
+    Rules rules = this;
+    for (Rule rule : rules.getRules()) {
+      if (StringUtils.isBlank(rule.getName())) {
+        throw new BadRulesException("Rule name cannot be blank.");
+      }
+      validateRule(rule);
+    }
+  }
+
+  private static void validateRule(Rule rule) throws BadRulesException {
+    if (rule.getInvocations() != null) {
+      for (Invocation invocation : rule.getInvocations()) {
+        Method notFrom = invocation.getNotFrom();
+        if (allEmpty(notFrom)) {
+          throw new BadRulesException("\"invocation.notFrom\" property cannot have all the fields blank.");
+        }
+        Method from = invocation.getFrom();
+        if (allEmpty(from)) {
+          throw new BadRulesException("\"invocation.from\" property cannot have all the fields blank.");
+        }
+        if (notFrom != null && from != null) {
+          throw new BadRulesException("\"invocation.notFrom\" and \"invocation.from\" cannot be defined at the same time in the same rule.");
+        }
+        Method method = invocation.getMethod();
+        if (allEmpty(method)) {
+          throw new BadRulesException("\"invocation.method\" property cannot have all the fields blank.");
+        }
+      }
+    }
   }
 }

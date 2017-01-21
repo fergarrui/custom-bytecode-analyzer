@@ -16,14 +16,19 @@
  */
 package net.nandgr.cba.custom.visitor;
 
+import java.util.List;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.model.Method;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
-import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CustomMethodInvocationVisitor extends CustomAbstractVisitor {
+public class CustomMethodInvocationVisitor extends CustomAbstractClassVisitor {
 
   private final Invocation invocation;
 
@@ -35,29 +40,34 @@ public class CustomMethodInvocationVisitor extends CustomAbstractVisitor {
   }
 
   @Override
-  public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-    logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
+  public void process() {
+    for (MethodNode methodNode : getClassNode().methods) {
+      InsnList instructions = methodNode.instructions;
+      for (int i = 0; i < instructions.size(); i++) {
+        AbstractInsnNode insnNode = instructions.get(i);
+        if (insnNode.getType() == AbstractInsnNode.METHOD_INSN) {
+          MethodInsnNode methodInsnNode = (MethodInsnNode)insnNode;
+          int access = methodNode.access;
+          String name = methodNode.name;
+          String desc = methodNode.desc;
+          String signature = methodNode.signature;
+          List<String> exceptions = methodNode.exceptions;
+          logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
 
-    Method notFrom = invocation.getNotFrom();
-    Method from = invocation.getFrom();
-    if (checkNotFrom(notFrom, access, name, desc) && checkFrom(from, access, name, desc)) {
-      return new CustomInvocationFinderVisitor(this, invocation);
+          Method notFrom = invocation.getNotFrom();
+          Method from = invocation.getFrom();
+          if (RuleHelper.checkNotFrom(notFrom, access, name, desc) && RuleHelper.checkFrom(from, access, name, desc)) {
+            CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
+            customInvocationFinderInsnVisitor.setNode(methodInsnNode);
+            customInvocationFinderInsnVisitor.process();
+            if (customInvocationFinderInsnVisitor.issueFound()) {
+              itemsFound().addAll(customInvocationFinderInsnVisitor.itemsFound());
+              setIssueFound(true);
+            }
+          }
+        }
+      }
     }
-    return super.visitMethod(access, name, desc, signature, exceptions);
-  }
-
-  private static boolean checkNotFrom(Method notFrom, int access, String name, String desc) {
-    if (notFrom == null) {
-      return true;
-    }
-    return !RuleHelper.isValidMethod(notFrom, access, name, desc);
-  }
-
-  private static boolean checkFrom(Method from, int access, String name, String desc) {
-    if (from == null) {
-      return true;
-    }
-    return RuleHelper.isValidMethod(from, access, name, desc);
   }
 
   @Override

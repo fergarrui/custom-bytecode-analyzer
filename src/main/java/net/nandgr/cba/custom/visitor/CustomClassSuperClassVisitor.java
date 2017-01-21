@@ -16,12 +16,14 @@
  */
 package net.nandgr.cba.custom.visitor;
 
+import java.util.List;
+import net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor;
 import net.nandgr.cba.custom.visitor.helper.StringsHelper;
 import net.nandgr.cba.report.ReportItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CustomClassSuperClassVisitor extends CustomAbstractVisitor {
+public class CustomClassSuperClassVisitor extends CustomAbstractClassVisitor {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomClassSuperClassVisitor.class);
   private final String superClass;
@@ -32,14 +34,20 @@ public class CustomClassSuperClassVisitor extends CustomAbstractVisitor {
   }
 
   @Override
-  public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+  public void process() {
+    int version = getClassNode().version;
+    int access = getClassNode().access;
+    String name = getClassNode().name;
+    String signature = getClassNode().signature;
+    String superName = getClassNode().superName;
+    List<String> interfaces = getClassNode().interfaces;
     logger.trace("visit class: version={} access={} name={} signature={} superName={} interfaces={}", version, access, name, signature, superName, interfaces);
+
     if (superName.equals(StringsHelper.dotsToSlashes(superClass))) {
       ReportItem reportItem = new ReportItem(-1, null,null, getRuleName(), showInReport());
       this.setIssueFound(true);
       this.itemsFound().add(reportItem);
     }
-    super.visit(version, access, name, signature, superName, interfaces);
   }
 
   @Override

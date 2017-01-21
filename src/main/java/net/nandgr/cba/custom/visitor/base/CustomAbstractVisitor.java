@@ -14,25 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.nandgr.cba.custom.visitor;
+package net.nandgr.cba.custom.visitor.base;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import net.nandgr.cba.custom.visitor.base.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
 import java.util.ArrayList;
-import java.util.List;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 
-public abstract class CustomAbstractVisitor extends ClassVisitor implements CustomVisitor {
+public abstract class CustomAbstractVisitor<T> implements CustomVisitor {
 
   protected Collection<ReportItem> itemsFound = new ArrayList<>();
   protected boolean foundIssue = false;
   private final String ruleName;
 
   public CustomAbstractVisitor(String ruleName) {
-    super(Opcodes.ASM4);
     this.ruleName = ruleName;
   }
 

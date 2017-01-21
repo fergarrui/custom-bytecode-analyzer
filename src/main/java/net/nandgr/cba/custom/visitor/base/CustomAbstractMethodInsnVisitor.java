@@ -14,16 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.nandgr.cba.custom.visitor;
+package net.nandgr.cba.custom.visitor.base;
 
-import java.util.Collection;
-import net.nandgr.cba.report.ReportItem;
+import org.objectweb.asm.tree.MethodInsnNode;
 
-public interface CustomVisitor {
-  boolean issueFound();
-  void setIssueFound(boolean issueFound);
-  Collection<ReportItem> itemsFound();
-  String getRuleName();
-  boolean showInReport();
-  void clear();
+public abstract class CustomAbstractMethodInsnVisitor extends CustomAbstractVisitor {
+
+  private MethodInsnNode methodInsnNode;
+
+  public CustomAbstractMethodInsnVisitor(String ruleName) {
+    super(ruleName);
+  }
+
+  public MethodInsnNode getMethodInsnNode() {
+    return methodInsnNode;
+  }
+
+  @Override
+  public void setNode(Object node) {
+    this.methodInsnNode = (MethodInsnNode) node;
+  }
 }

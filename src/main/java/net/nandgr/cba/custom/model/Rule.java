@@ -27,7 +27,6 @@ public class Rule {
   private List<Field> fields;
   private List<Method> methods;
   private List<Invocation> invocations;
-  private List<Variable> variables;
 
   public String getName() {
     return name;
@@ -85,14 +84,6 @@ public class Rule {
     this.fields = fields;
   }
 
-  public List<Variable> getVariables() {
-    return variables;
-  }
-
-  public void setVariables(List<Variable> variables) {
-    this.variables = variables;
-  }
-
   @Override
   public String toString() {
     return "Rule{" +
@@ -103,7 +94,6 @@ public class Rule {
             ", fields=" + fields +
             ", methods=" + methods +
             ", invocations=" + invocations +
-            ", variables=" + variables +
             '}';
   }
 }
