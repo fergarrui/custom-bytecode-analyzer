@@ -61,7 +61,7 @@ public class JarAnalyzerCallable implements Callable {
     return reportItems;
   }
 
-  private static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className) {
+  public static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className) {
     reportItems.stream().forEach(reportItem -> {
       reportItem.setJarPath(jarPath);
       reportItem.setClassName(className);

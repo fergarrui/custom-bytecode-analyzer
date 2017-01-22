@@ -69,35 +69,4 @@ public class ReportItem {
   public boolean isShowInReport() {
     return showInReport;
   }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ReportItem)) return false;
-
-    ReportItem that = (ReportItem) o;
-
-    if (getLineNumber() != that.getLineNumber()) return false;
-    if (isShowInReport() != that.isShowInReport()) return false;
-    if (getJarPath() != null ? !getJarPath().equals(that.getJarPath()) : that.getJarPath() != null) return false;
-    if (getClassName() != null ? !getClassName().equals(that.getClassName()) : that.getClassName() != null)
-      return false;
-    if (getMethodName() != null ? !getMethodName().equals(that.getMethodName()) : that.getMethodName() != null)
-      return false;
-    if (getFieldName() != null ? !getFieldName().equals(that.getFieldName()) : that.getFieldName() != null)
-      return false;
-    return getRuleName() != null ? getRuleName().equals(that.getRuleName()) : that.getRuleName() == null;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = getJarPath() != null ? getJarPath().hashCode() : 0;
-    result = 31 * result + (getClassName() != null ? getClassName().hashCode() : 0);
-    result = 31 * result + (getMethodName() != null ? getMethodName().hashCode() : 0);
-    result = 31 * result + (getFieldName() != null ? getFieldName().hashCode() : 0);
-    result = 31 * result + (getRuleName() != null ? getRuleName().hashCode() : 0);
-    result = 31 * result + getLineNumber();
-    result = 31 * result + (isShowInReport() ? 1 : 0);
-    return result;
-  }
 }

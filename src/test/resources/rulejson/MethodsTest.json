@@ -1,0 +1,66 @@
+{
+  "rules": [
+    {
+      "name": "methods1",
+      "methods" : [{
+        "visibility" : "public"
+      }]
+    },
+    {
+      "name": "methods2",
+      "methods" : [{
+        "visibility" : "private",
+        "parameters" : [{
+          "type" : "java.lang.String"
+        },
+        {
+          "type" : "java.lang.Integer"
+        }]
+      }]
+    },
+    {
+      "name": "methods3",
+      "methods" : [{
+        "visibility" : "private",
+        "variables" : [{
+          "type" : "java.lang.String"
+        },
+        {
+          "type" : "java.lang.Integer"
+        }]
+      }]
+    },
+    {
+      "name": "methods4",
+      "methods" : [{
+        "visibility" : "private",
+        "variables" : [{
+          "type" : "java.lang.String",
+          "nameRegex" : "(password|pass|psswd|passwd)"
+        }]
+      }]
+    },
+    {
+      "name": "methods5",
+      "methods" : [{
+        "visibility" : "private",
+        "variables" : [{
+          "type" : "java.lang.Integer",
+          "nameRegex" : "(password|pass|psswd|passwd)"
+        }]
+      }]
+    },
+    {
+      "name": "methods6",
+      "methods" : [{
+        "visibility" : "private",
+        "variables" : [{
+          "type" : "java.lang.Integer"
+        }],
+        "parameters" : [{
+          "type" : "java.lang.String"
+        }]
+      }]
+    }
+  ]
+}

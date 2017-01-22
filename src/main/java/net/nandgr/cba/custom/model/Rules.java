@@ -43,8 +43,7 @@ public class Rules {
   }
 
   public void validateRules() throws BadRulesException {
-    Rules rules = this;
-    for (Rule rule : rules.getRules()) {
+    for (Rule rule : this.getRules()) {
       if (StringUtils.isBlank(rule.getName())) {
         throw new BadRulesException("Rule name cannot be blank.");
       }
@@ -55,22 +54,26 @@ public class Rules {
   private static void validateRule(Rule rule) throws BadRulesException {
     if (rule.getInvocations() != null) {
       for (Invocation invocation : rule.getInvocations()) {
+
         Method notFrom = invocation.getNotFrom();
-        if (allEmpty(notFrom)) {
-          throw new BadRulesException("\"invocation.notFrom\" property cannot have all the fields blank.");
-        }
+        checkEmpty(notFrom, "\"invocation.notFrom\" property cannot have all the fields blank.");
+
         Method from = invocation.getFrom();
-        if (allEmpty(from)) {
-          throw new BadRulesException("\"invocation.from\" property cannot have all the fields blank.");
-        }
+        checkEmpty(from, "\"invocation.from\" property cannot have all the fields blank.");
+
+        Method method = invocation.getMethod();
+        checkEmpty(method, "\"invocation.method\" property cannot have all the fields blank.");
+
         if (notFrom != null && from != null) {
           throw new BadRulesException("\"invocation.notFrom\" and \"invocation.from\" cannot be defined at the same time in the same rule.");
         }
-        Method method = invocation.getMethod();
-        if (allEmpty(method)) {
-          throw new BadRulesException("\"invocation.method\" property cannot have all the fields blank.");
-        }
       }
+    }
+  }
+
+  private static void checkEmpty(Method method, String message) throws BadRulesException {
+    if (allEmpty(method)) {
+      throw new BadRulesException(message);
     }
   }
 }

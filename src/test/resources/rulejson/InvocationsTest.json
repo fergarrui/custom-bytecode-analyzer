@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "name": "invocations1",
+      "invocations" : [{
+        "method" : {
+          "name" : "toString"
+        }
+      }]
+    },
+    {
+      "name": "invocations2",
+      "invocations" : [{
+        "method" : {
+          "name" : "toString"
+        },
+        "notFrom" : {
+          "visibility" : "private"
+        }
+      }]
+    },
+    {
+      "name": "invocations3",
+      "invocations" : [{
+        "method" : {
+          "name" : "toString"
+        }
+      },
+      {
+        "method" : {
+          "name" : "equals"
+        }
+      }
+      ]
+    },
+    {
+      "name": "invocations4",
+      "invocations" : [{
+        "owner" : "java.lang.Boolean",
+        "method" : {
+          "name" : "toString"
+        }
+      }]
+    },
+    {
+      "name": "invocations5",
+      "invocations" : [{
+        "owner" : "java.lang.Boolean",
+        "method" : {
+          "name" : "toString"
+        },
+        "from" : {
+          "name" : "method3"
+        }
+      }]
+    }
+  ]
+}

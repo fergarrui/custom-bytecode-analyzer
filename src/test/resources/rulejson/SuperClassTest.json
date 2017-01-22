@@ -1,0 +1,10 @@
+{
+  "rules": [{
+    "name": "class fields test",
+    "superClass" : "java.util.Date"
+  },
+    {
+      "name": "class fields test 2",
+      "superClass" : "rules.testfiles.superclass.SuperClassTestFile$A"
+    }]
+}

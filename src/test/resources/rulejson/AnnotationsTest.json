@@ -1,0 +1,49 @@
+{
+  "rules": [{
+    "name" : "annotations1",
+    "annotations" : [{
+      "type" : "java.lang.Deprecated"
+    }]
+  },
+    {
+      "name" : "annotations2",
+      "annotations" : [{
+        "type" : "java.lang.Deprecated"
+      },
+      {
+        "type" : "com.google.gson.annotations.Since"
+      }]
+    },
+    {
+      "name" : "annotations3",
+      "annotations" : [{
+        "type" : "java.lang.Deprecated"
+      }],
+      "methods" : [{
+        "annotations" : [{
+          "type" : "java.lang.Deprecated"
+        }],
+        "parameters" : [{
+          "annotations" : [{
+            "type" : "java.lang.Deprecated"
+          }]
+        }]
+      }]
+    },
+    {
+      "name" : "annotations4",
+      "methods" : [{
+        "parameters" : [{
+          "annotations" : [{
+            "type" : "java.lang.Deprecated"
+          }]
+        }]
+      }]
+    },
+    {
+      "name" : "annotations5",
+      "annotations" : [{
+        "type" : "com.google.gson.annotations.Since"
+      }]
+    }]
+}

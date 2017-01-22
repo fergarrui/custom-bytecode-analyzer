@@ -1,0 +1,18 @@
+{
+  "rules": [{
+    "name": "interfaces1",
+    "interfaces" : ["java.lang.Comparable"]
+  },
+    {
+      "name": "interfaces2",
+      "interfaces" : ["java.lang.Comparable", "rules.testfiles.interfaces.InterfacesTestFile$B"]
+    },
+    {
+      "name": "interfaces3",
+      "interfaces" : ["rules.testfiles.interfaces.InterfacesTestFile$B", "java.lang.Comparable"]
+    },
+    {
+      "name": "interfaces4",
+      "interfaces" : ["rules.testfiles.interfaces.InterfacesTestFile$F", "rules.testfiles.interfaces.InterfacesTestFile$B"]
+    }]
+}

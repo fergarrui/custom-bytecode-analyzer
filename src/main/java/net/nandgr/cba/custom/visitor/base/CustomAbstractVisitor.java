@@ -21,7 +21,7 @@ import net.nandgr.cba.custom.visitor.base.CustomVisitor;
 import net.nandgr.cba.report.ReportItem;
 import java.util.ArrayList;
 
-public abstract class CustomAbstractVisitor<T> implements CustomVisitor {
+public abstract class CustomAbstractVisitor implements CustomVisitor {
 
   protected Collection<ReportItem> itemsFound = new ArrayList<>();
   protected boolean foundIssue = false;

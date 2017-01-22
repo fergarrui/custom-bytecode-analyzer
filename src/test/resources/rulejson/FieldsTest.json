@@ -1,0 +1,46 @@
+{
+  "rules": [{
+    "name" : "fields1",
+    "fields" : [
+      {
+        "visibility" : "private",
+        "type" : "java.lang.String",
+        "nameRegex" : "(password|pass|psswd|passwd)"
+      }
+    ]
+  },
+    {
+      "name" : "fields2",
+      "fields" : [
+        {
+        }
+      ]
+    },
+    {
+      "name" : "fields3",
+      "fields" : [
+        {
+          "visibility" : "public",
+          "type" : "java.lang.String"
+        }
+      ]
+    },
+    {
+      "name" : "fields4",
+      "fields" : [
+        {
+          "valueRegex" : "valueB"
+        }
+      ]
+    },
+    {
+      "name" : "fields5",
+      "fields" : [
+        {
+          "visibility" : "private",
+          "type" : "java.lang.Integer",
+          "nameRegex" : "(password|pass|psswd|passwd)"
+        }
+      ]
+    }]
+}
