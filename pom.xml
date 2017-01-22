@@ -23,6 +23,7 @@
     <commons.lang.version>2.6</commons.lang.version>
     <junit.version>4.12</junit.version>
     <jar.cli>cba-cli-${version}</jar.cli>
+    <procyon-version>0.5.32</procyon-version>
   </properties>
 
 <dependencies>
@@ -76,6 +77,12 @@
     <groupId>com.webfirmframework</groupId>
     <artifactId>wffweb</artifactId>
     <version>${wffweb.version}</version>
+  </dependency>
+  <!-- decompile -->
+  <dependency>
+    <groupId>org.bitbucket.mstrobel</groupId>
+    <artifactId>procyon-compilertools</artifactId>
+    <version>${procyon-version}</version>
   </dependency>
   <!-- test dependencies -->
   <dependency>

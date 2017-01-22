@@ -16,6 +16,9 @@
  */
 package net.nandgr.cba;
 
+import java.io.InputStream;
+import net.nandgr.cba.decompile.Decompiler;
+import net.nandgr.cba.decompile.ZipEntryDecompiler;
 import net.nandgr.cba.report.ReportItem;
 import java.io.File;
 import java.io.IOException;
@@ -49,10 +52,19 @@ public class JarAnalyzerCallable implements Callable {
       zipFile.stream().filter(JarAnalyzerCallable::isClassFile)
         .forEach(zipEntry -> {
           try {
-            logger.debug("Class found: {}", zipEntry.getName());
+            String zipEntryName = zipEntry.getName();
+            logger.debug("Class found: {}", zipEntryName);
+
+            // retrieving a new inputStream - do not extract variable
             List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(zipFile.getInputStream(zipEntry));
-            addContextToReportItems(analyzeReportItems, jarPath.toAbsolutePath().toString(), zipEntry.getName());
+            addContextToReportItems(analyzeReportItems, jarPath.toAbsolutePath().toString(), zipEntryName);
             reportItems.addAll(analyzeReportItems);
+
+            if (!analyzeReportItems.isEmpty()) {
+              Decompiler decompiler = new ZipEntryDecompiler();
+              // retrieving a new inputStream - do not extract variable
+              decompiler.decompile(zipFile.getInputStream(zipEntry), zipEntryName);
+            }
           } catch (IOException e) {
             logger.error("Error while analyzing Jar internals.", e);
           }
