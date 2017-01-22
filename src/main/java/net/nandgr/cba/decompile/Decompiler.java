@@ -16,9 +16,10 @@
  */
 package net.nandgr.cba.decompile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface Decompiler {
-  void decompile(InputStream inputStream, String entryName) throws IOException;
+  File decompile(InputStream inputStream, String entryName) throws IOException;
 }

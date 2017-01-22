@@ -24,7 +24,8 @@ public class FieldsTest extends AbstractTest {
     assertTrue(matchClassName(reportItems1, "FieldsTestFile$A.class"));
 
     List<ReportItem> reportItems2 = getReportItems("fields2").stream()
-            .filter(r -> !r.getFieldName().contains("this")).collect(Collectors.toList());
+            .filter(r ->!r.getProperties().getOrDefault("Field name", "").contains("this"))
+            .collect(Collectors.toList());
     assertEquals(8, reportItems2.size());
 
     List<ReportItem> reportItems3 = getReportItems("fields3");

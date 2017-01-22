@@ -16,21 +16,21 @@
  */
 package net.nandgr.cba.report;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ReportItem {
 
   private String jarPath = "";
   private String className = "";
-  private final String methodName;
-  private final String fieldName;
+  private File decompiledFile;
   private final String ruleName;
-  private final int lineNumber;
   private final boolean showInReport;
+  private Map<String,String> properties = new HashMap<>();
 
-  public ReportItem(int lineNumber, String methodName, String fieldName, String ruleName, boolean showInReport) {
-    this.lineNumber = lineNumber;
-    this.methodName = methodName;
+  public ReportItem(String ruleName, boolean showInReport) {
     this.ruleName = ruleName;
-    this.fieldName = fieldName;
     this.showInReport = showInReport;
   }
 
@@ -42,20 +42,8 @@ public class ReportItem {
     return className;
   }
 
-  public int getLineNumber() {
-    return lineNumber;
-  }
-
   public String getRuleName() {
     return ruleName;
-  }
-
-  public String getMethodName() {
-    return methodName;
-  }
-
-  public String getFieldName() {
-    return fieldName;
   }
 
   public void setJarPath(String jarPath) {
@@ -68,5 +56,22 @@ public class ReportItem {
 
   public boolean isShowInReport() {
     return showInReport;
+  }
+
+  public File getDecompiledFile() {
+    return decompiledFile;
+  }
+
+  public Map<String, String> getProperties() {
+    return properties;
+  }
+
+  public ReportItem addProperty(String propertyName, String propertyValue) {
+    properties.put(propertyName, propertyValue);
+    return this;
+  }
+
+  public void setDecompiledFile(File decompiledFile) {
+    this.decompiledFile = decompiledFile;
   }
 }

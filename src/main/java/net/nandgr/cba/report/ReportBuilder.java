@@ -98,6 +98,7 @@ public class ReportBuilder {
         new NoTag(title, "Report for: " + CliHelper.getPathToAnalyze());
         body = new Body(html);
       }
+
       ReportItem reportItem = reportItemIterator.next();
       H4 itemTittle = new H4(body);
       new NoTag(itemTittle, reportItem.getRuleName());
@@ -115,33 +116,20 @@ public class ReportBuilder {
       Td classNameValue = new Td(className);
       new NoTag(classNameValue, reportItem.getClassName());
 
-      int reportItemLineNumber = reportItem.getLineNumber();
-      if (reportItemLineNumber != -1) {
-        Tr lineNumber = new Tr(itemTable);
-        Td lineNumberKey = new Td(lineNumber);
-        new NoTag(lineNumberKey, "Line: ");
-        Td lineNumberValue = new Td(lineNumber);
-        new NoTag(lineNumberValue, String.valueOf(reportItemLineNumber));
-      }
-      String reportMethodName = reportItem.getMethodName();
-      if (!StringUtils.isBlank(reportMethodName)) {
-        if (reportMethodName.startsWith("<") && reportMethodName.endsWith(">")) {
-          reportMethodName = reportMethodName.substring(1, reportMethodName.length()-1);
+      for (Map.Entry<String, String> propertiesEntry : reportItem.getProperties().entrySet()) {
+        String propertyName = propertiesEntry.getKey();
+        String propertyValue = propertiesEntry.getValue();
+
+        if (propertyName.startsWith("<") && propertyName.endsWith(">")) {
+          propertyName = propertyName.substring(1, propertyName.length()-1);
         }
-        Tr methodName = new Tr(itemTable);
-        Td methodNameKey = new Td(methodName);
-        new NoTag(methodNameKey, "Method name: ");
-        Td methodNameValue = new Td(methodName);
-        new NoTag(methodNameValue, reportMethodName);
+        Tr propertyTr = new Tr(itemTable);
+        Td propertyTd = new Td(propertyTr);
+        new NoTag(propertyTd, propertyName + ": ");
+        Td lineNumberValue = new Td(propertyTr);
+        new NoTag(lineNumberValue, propertyValue);
       }
-      String reportFieldName = reportItem.getFieldName();
-      if (!StringUtils.isBlank(reportFieldName)) {
-        Tr fieldName = new Tr(itemTable);
-        Td fieldNameKey = new Td(fieldName);
-        new NoTag(fieldNameKey, "Field/var name: ");
-        Td fieldNameValue = new Td(fieldName);
-        new NoTag(fieldNameValue, reportFieldName);
-      }
+
       if (!reportItemIterator.hasNext()) {
         htmlChunks.add(html.toHtmlString());
       }

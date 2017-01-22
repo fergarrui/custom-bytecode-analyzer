@@ -55,7 +55,7 @@ public class CustomClassAnnotationVisitor extends CustomAbstractClassVisitor {
       logger.trace("visitAnnotation: desc={}, visible={}", desc, visible);
       issueFound = StringsHelper.simpleDescriptorToHuman(desc).equals(StringsHelper.dotsToSlashes(annotation.getType()));
       if (issueFound) {
-        ReportItem reportItem = new ReportItem(-1, null, null,getRuleName(), showInReport());
+        ReportItem reportItem = new ReportItem(getRuleName(), showInReport());
         this.itemsFound().add(reportItem);
         this.setIssueFound(true);
       }

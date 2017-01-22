@@ -39,7 +39,7 @@ public abstract class AbstractTest {
                 try {
                   InputStream inputStream = Files.newInputStream(filePath);
                   List<ReportItem> reportItems = byteCodeAnalyzer.analyze(inputStream);
-                  JarAnalyzerCallable.addContextToReportItems(reportItems, "test", filePath.getFileName().toString());
+                  JarAnalyzerCallable.addContextToReportItems(reportItems, "test", filePath.getFileName().toString(), null);
                   this.reportItems.addAll(reportItems);
                 } catch (IOException e) {
                   e.printStackTrace();

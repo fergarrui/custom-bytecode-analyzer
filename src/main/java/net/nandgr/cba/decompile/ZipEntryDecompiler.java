@@ -19,9 +19,10 @@ public class ZipEntryDecompiler implements Decompiler {
   private static final String DECOMPILED_DIR = "decompiled/";
 
   @Override
-  public void decompile(InputStream inputStream, String entryName) throws IOException {
+  public File decompile(InputStream inputStream, String entryName) throws IOException {
     logger.debug("Decompiling... {}", entryName);
     File tempFile = createTempFile(entryName, inputStream);
+    tempFile.deleteOnExit();
     String decompiledFileName = getDecompiledFileName(entryName);
     File decompiledFile = new File(decompiledFileName);
     decompiledFile.getParentFile().mkdirs();
@@ -33,7 +34,7 @@ public class ZipEntryDecompiler implements Decompiler {
       throw e;
     }
     pw.flush();
-//    tempFile.delete();
+    return decompiledFile;
   }
 
   private static File createTempFile(String entryName, InputStream inputStream) throws IOException {

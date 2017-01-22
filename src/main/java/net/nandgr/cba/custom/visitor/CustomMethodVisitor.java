@@ -80,7 +80,7 @@ public class CustomMethodVisitor extends CustomAbstractClassVisitor {
       }
 
       if (RuleHelper.isValidMethod(method, access, name) && annotationFound && variableFound && parameterFound && variableAnnotationFound && parameterAnnotationFound) {
-        ReportItem reportItem = new ReportItem(-1, name, null, getRuleName(), showInReport());
+        ReportItem reportItem = new ReportItem(getRuleName(), showInReport()).addProperty("Method Name", name);
         this.itemsFound.add(reportItem);
         logger.debug("Issue found at method - access: {}, name: {}, desc: {}, signature: {}, exceptions: {}", access, name, desc, signature, exceptions);
         this.foundIssue = true;

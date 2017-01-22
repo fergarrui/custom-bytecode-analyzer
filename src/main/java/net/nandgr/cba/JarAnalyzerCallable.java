@@ -57,14 +57,16 @@ public class JarAnalyzerCallable implements Callable {
 
             // retrieving a new inputStream - do not extract variable
             List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(zipFile.getInputStream(zipEntry));
-            addContextToReportItems(analyzeReportItems, jarPath.toAbsolutePath().toString(), zipEntryName);
-            reportItems.addAll(analyzeReportItems);
 
+            File decompiledFile = null;
             if (!analyzeReportItems.isEmpty()) {
               Decompiler decompiler = new ZipEntryDecompiler();
               // retrieving a new inputStream - do not extract variable
-              decompiler.decompile(zipFile.getInputStream(zipEntry), zipEntryName);
+              decompiledFile = decompiler.decompile(zipFile.getInputStream(zipEntry), zipEntryName);
             }
+
+            addContextToReportItems(analyzeReportItems, jarPath.toAbsolutePath().toString(), zipEntryName, decompiledFile);
+            reportItems.addAll(analyzeReportItems);
           } catch (IOException e) {
             logger.error("Error while analyzing Jar internals.", e);
           }
@@ -73,10 +75,11 @@ public class JarAnalyzerCallable implements Callable {
     return reportItems;
   }
 
-  public static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className) {
+  public static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className, File decompiledFile) {
     reportItems.stream().forEach(reportItem -> {
       reportItem.setJarPath(jarPath);
       reportItem.setClassName(className);
+      reportItem.setDecompiledFile(decompiledFile);
     });
   }
 
