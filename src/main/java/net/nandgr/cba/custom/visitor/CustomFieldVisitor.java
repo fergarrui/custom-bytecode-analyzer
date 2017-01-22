@@ -36,7 +36,7 @@ public class CustomFieldVisitor extends CustomAbstractClassVisitor {
 
   @Override
   public void process() {
-    boolean issueFound = true;
+    boolean issueFound;
     for (FieldNode fieldNode : getClassNode().fields) {
       int access = fieldNode.access;
       String name = fieldNode.name;
@@ -48,9 +48,9 @@ public class CustomFieldVisitor extends CustomAbstractClassVisitor {
       if (issueFound) {
         ReportItem reportItem = new ReportItem(-1,null, name, getRuleName(), showInReport());
         itemsFound().add(reportItem);
+        setIssueFound(issueFound);
       }
     }
-    setIssueFound(issueFound);
   }
 
   @Override

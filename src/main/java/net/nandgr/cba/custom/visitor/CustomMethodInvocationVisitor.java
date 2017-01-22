@@ -47,25 +47,33 @@ public class CustomMethodInvocationVisitor extends CustomAbstractClassVisitor {
         AbstractInsnNode insnNode = instructions.get(i);
         if (insnNode.getType() == AbstractInsnNode.METHOD_INSN) {
           MethodInsnNode methodInsnNode = (MethodInsnNode)insnNode;
-          int access = methodNode.access;
-          String name = methodNode.name;
-          String desc = methodNode.desc;
-          String signature = methodNode.signature;
-          List<String> exceptions = methodNode.exceptions;
-          logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
-
-          Method notFrom = invocation.getNotFrom();
-          Method from = invocation.getFrom();
-          if (RuleHelper.checkNotFrom(notFrom, access, name) && RuleHelper.checkFrom(from, access, name)) {
-            CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
-            customInvocationFinderInsnVisitor.setNode(methodInsnNode);
-            customInvocationFinderInsnVisitor.process();
-            if (customInvocationFinderInsnVisitor.issueFound()) {
-              itemsFound().addAll(customInvocationFinderInsnVisitor.itemsFound());
-              setIssueFound(true);
-            }
-          }
+          processMethodInsnNode(methodNode, methodInsnNode);
         }
+      }
+    }
+  }
+
+  private void processMethodInsnNode(MethodNode methodNode, MethodInsnNode methodInsnNode) {
+    int access = methodNode.access;
+    String name = methodNode.name;
+    String desc = methodNode.desc;
+    String signature = methodNode.signature;
+    List<String> exceptions = methodNode.exceptions;
+    logger.trace("visitMethod: access={} name={} desc={} signature={} exceptions={}", access, name, desc, signature, exceptions);
+
+    Method notFrom = invocation.getNotFrom();
+    Method from = invocation.getFrom();
+    processAndReport(methodInsnNode, access, name, notFrom, from);
+  }
+
+  private void processAndReport(MethodInsnNode methodInsnNode, int access, String name, Method notFrom, Method from) {
+    if (RuleHelper.checkNotFrom(notFrom, access, name) && RuleHelper.checkFrom(from, access, name)) {
+      CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
+      customInvocationFinderInsnVisitor.setNode(methodInsnNode);
+      customInvocationFinderInsnVisitor.process();
+      if (customInvocationFinderInsnVisitor.issueFound()) {
+        itemsFound().addAll(customInvocationFinderInsnVisitor.itemsFound());
+        setIssueFound(true);
       }
     }
   }

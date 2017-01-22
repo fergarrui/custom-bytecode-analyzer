@@ -51,13 +51,6 @@ public class Method {
     this.parameters = parameters;
   }
 
-  public List<Variable> getVariables() {
-    return variables;
-  }
-
-  public void setVariables(List<Variable> variables) {
-    this.variables = variables;
-  }
 
   public List<Annotation> getAnnotations() {
     return annotations;
@@ -65,6 +58,14 @@ public class Method {
 
   public void setAnnotations(List<Annotation> annotations) {
     this.annotations = annotations;
+  }
+
+  public List<Variable> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(List<Variable> variables) {
+    this.variables = variables;
   }
 
   public Boolean isReport() {

@@ -21,7 +21,6 @@ import net.nandgr.cba.custom.model.Annotation;
 import net.nandgr.cba.custom.model.Field;
 import net.nandgr.cba.custom.model.Rule;
 import net.nandgr.cba.custom.model.Rules;
-import net.nandgr.cba.custom.model.Variable;
 import net.nandgr.cba.custom.visitor.CustomClassAnnotationVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassInterfacesVisitor;
 import net.nandgr.cba.custom.visitor.CustomClassSuperClassVisitor;
@@ -52,62 +51,92 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
   private static final String CHECKS_PACKAGE = "net.nandgr.cba.visitor.checks.";
   private final List<RuleVisitorsAnalyzer> ruleVisitorsAnalyzers = new ArrayList<>();
 
-  public CustomByteCodeAnalyzer() throws ReflectiveOperationException, IOException {
-    if (CliHelper.hasCustomFile()) {
-      populateCustomVisitors();
+  public CustomByteCodeAnalyzer(boolean hasCustomFile, boolean hasChecks, Rules rules) throws ReflectiveOperationException, IOException {
+    if (hasCustomFile) {
+      populateCustomVisitors(rules);
     }
-    if (CliHelper.hasChecks()) {
+    if (hasChecks) {
       populateStaticVisitors();
     }
   }
 
-  private void populateCustomVisitors() throws IOException {
-    Rules rules = CliHelper.getRules();
+  private void populateCustomVisitors(Rules rules) throws IOException {
     logger.debug("Processing {} rule(s)", rules.getRules().size());
     for (Rule rule : rules.getRules()) {
       logger.debug("Rule {} added.", rule.getName());
       RuleVisitorsAnalyzer ruleVisitorsAnalyzer = new RuleVisitorsAnalyzer();
+
       List<Method> methods = rule.getMethods();
-      if (methods != null) {
-        for (Method method : methods) {
-          CustomMethodVisitor customMethodVisitor = new CustomMethodVisitor(method, rule.getName());
-          ruleVisitorsAnalyzer.getVisitorList().add(customMethodVisitor);
-        }
-      }
+      addMethods(ruleVisitorsAnalyzer, methods, rule);
+
       List<Invocation> invocations = rule.getInvocations();
-      if (invocations != null) {
-        for (Invocation invocation : invocations) {
-          CustomMethodInvocationVisitor customMethodInvocationVisitor = new CustomMethodInvocationVisitor(invocation, rule.getName());
-          ruleVisitorsAnalyzer.getVisitorList().add(customMethodInvocationVisitor);
-        }
-      }
+      addInvocations(ruleVisitorsAnalyzer, invocations, rule);
+
       List<String> interfaces = rule.getInterfaces();
-      if (interfaces != null && !interfaces.isEmpty()) {
-        CustomClassInterfacesVisitor customClassInterfacesVisitor = new CustomClassInterfacesVisitor(interfaces, rule.getName());
-        ruleVisitorsAnalyzer.getVisitorList().add(customClassInterfacesVisitor);
-      }
+      addInterfaces(ruleVisitorsAnalyzer, interfaces, rule);
+
       String superClass = rule.getSuperClass();
-      if (!StringUtils.isBlank(superClass)) {
-        CustomClassSuperClassVisitor customClassSuperClassVisitor = new CustomClassSuperClassVisitor(superClass, rule.getName());
-        ruleVisitorsAnalyzer.getVisitorList().add(customClassSuperClassVisitor);
-      }
+      addSuperClass(ruleVisitorsAnalyzer, superClass, rule);
+
       List<Annotation> annotations = rule.getAnnotations();
-      if (annotations != null && !annotations.isEmpty()) {
-        for (Annotation annotation : annotations) {
-          CustomClassAnnotationVisitor customClassAnnotationVisitor = new CustomClassAnnotationVisitor(annotation, rule.getName());
-          ruleVisitorsAnalyzer.getVisitorList().add(customClassAnnotationVisitor);
-        }
-      }
+      addAnnotations(ruleVisitorsAnalyzer, annotations, rule);
+
       List<Field> fields = rule.getFields();
-      if (fields != null && !fields.isEmpty()) {
-        for (Field field : fields) {
-          CustomFieldVisitor customFieldVisitor = new CustomFieldVisitor(field, rule.getName());
-          ruleVisitorsAnalyzer.getVisitorList().add(customFieldVisitor);
-        }
-      }
+      addFields(ruleVisitorsAnalyzer, fields, rule);
+
       this.ruleVisitorsAnalyzers.add(ruleVisitorsAnalyzer);
     }
     logger.debug("Rules processed.");
+  }
+
+  private static void addFields(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, List<Field> fields, Rule rule) {
+    if (fields != null && !fields.isEmpty()) {
+      for (Field field : fields) {
+        CustomFieldVisitor customFieldVisitor = new CustomFieldVisitor(field, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customFieldVisitor);
+      }
+    }
+  }
+
+  private void addAnnotations(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, List<Annotation> annotations, Rule rule) {
+    if (annotations != null && !annotations.isEmpty()) {
+      for (Annotation annotation : annotations) {
+        CustomClassAnnotationVisitor customClassAnnotationVisitor = new CustomClassAnnotationVisitor(annotation, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customClassAnnotationVisitor);
+      }
+    }
+  }
+
+  private static void addSuperClass(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, String superClass, Rule rule) {
+    if (!StringUtils.isBlank(superClass)) {
+      CustomClassSuperClassVisitor customClassSuperClassVisitor = new CustomClassSuperClassVisitor(superClass, rule.getName());
+      ruleVisitorsAnalyzer.getVisitorList().add(customClassSuperClassVisitor);
+    }
+  }
+
+  private static void addInterfaces(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, List<String> interfaces, Rule rule) {
+    if (interfaces != null && !interfaces.isEmpty()) {
+      CustomClassInterfacesVisitor customClassInterfacesVisitor = new CustomClassInterfacesVisitor(interfaces, rule.getName());
+      ruleVisitorsAnalyzer.getVisitorList().add(customClassInterfacesVisitor);
+    }
+  }
+
+  private static void addInvocations(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, List<Invocation> invocations, Rule rule) {
+    if (invocations != null) {
+      for (Invocation invocation : invocations) {
+        CustomMethodInvocationVisitor customMethodInvocationVisitor = new CustomMethodInvocationVisitor(invocation, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customMethodInvocationVisitor);
+      }
+    }
+  }
+
+  private static void addMethods(RuleVisitorsAnalyzer ruleVisitorsAnalyzer, List<Method> methods, Rule rule) {
+    if (methods != null) {
+      for (Method method : methods) {
+        CustomMethodVisitor customMethodVisitor = new CustomMethodVisitor(method, rule.getName());
+        ruleVisitorsAnalyzer.getVisitorList().add(customMethodVisitor);
+      }
+    }
   }
 
   private void populateStaticVisitors() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {

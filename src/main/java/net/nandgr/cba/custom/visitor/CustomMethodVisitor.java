@@ -27,7 +27,6 @@ import net.nandgr.cba.report.ReportItem;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.LocalVariableAnnotationNode;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,19 +93,11 @@ public class CustomMethodVisitor extends CustomAbstractClassVisitor {
     List<AnnotationNode> allParameterAnnotations = new ArrayList<>();
     List<AnnotationNode>[] visibleParameterAnnotations = methodNode.visibleParameterAnnotations;
     if (visibleParameterAnnotations != null && visibleParameterAnnotations.length != 0) {
-      for (List<AnnotationNode> visibleAnnotations : visibleParameterAnnotations) {
-        if (visibleAnnotations != null) {
-          allParameterAnnotations.addAll(visibleAnnotations);
-        }
-      }
+      addIfNotNull(allParameterAnnotations, visibleParameterAnnotations);
     }
     List<AnnotationNode>[] inVisibleParameterAnnotations = methodNode.invisibleParameterAnnotations;
     if (inVisibleParameterAnnotations != null && inVisibleParameterAnnotations.length != 0) {
-      for (List<AnnotationNode> inVisibleAnnotations : inVisibleParameterAnnotations) {
-        if (inVisibleAnnotations != null) {
-          allParameterAnnotations.addAll(inVisibleAnnotations);
-        }
-      }
+      addIfNotNull(allParameterAnnotations, inVisibleParameterAnnotations);
     }
     if (annotationRules != null && !annotationRules.isEmpty()) {
       for (Annotation annotationRule : annotationRules) {
@@ -115,6 +106,14 @@ public class CustomMethodVisitor extends CustomAbstractClassVisitor {
     }
 
     return annotationFound;
+  }
+
+  private void addIfNotNull(List<AnnotationNode> allParameterAnnotations, List<AnnotationNode>[] visibleParameterAnnotations) {
+    for (List<AnnotationNode> visibleAnnotations : visibleParameterAnnotations) {
+      if (visibleAnnotations != null) {
+        allParameterAnnotations.addAll(visibleAnnotations);
+      }
+    }
   }
 
   private boolean isLocalVariableAnnotationFound(List<Annotation> annotationRules, MethodNode methodNode) {

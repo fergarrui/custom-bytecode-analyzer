@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import net.nandgr.cba.custom.model.Rules;
-import net.nandgr.cba.custom.visitor.helper.RuleHelper;
 import net.nandgr.cba.exception.BadArgumentsException;
 import net.nandgr.cba.exception.BadRulesException;
 import net.nandgr.cba.logging.LogHelper;

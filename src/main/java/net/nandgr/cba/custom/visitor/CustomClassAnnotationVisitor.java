@@ -39,7 +39,7 @@ public class CustomClassAnnotationVisitor extends CustomAbstractClassVisitor {
 
   @Override
   public void process() {
-    boolean issueFound = true;
+    boolean issueFound;
     List<AnnotationNode> allAnnotations = new ArrayList<>();
     List<AnnotationNode> visibleAnnotations = getClassNode().visibleAnnotations;
     if (visibleAnnotations != null) {

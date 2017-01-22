@@ -20,8 +20,9 @@
     <mvn.assembly.plugin.version>2.4.1</mvn.assembly.plugin.version>
     <slf4j.api.version>1.7.22</slf4j.api.version>
     <logback.version>1.1.8</logback.version>
-    <jar.cli>cba-cli-${version}</jar.cli>
     <commons.lang.version>2.6</commons.lang.version>
+    <junit.version>4.12</junit.version>
+    <jar.cli>cba-cli-${version}</jar.cli>
   </properties>
 
 <dependencies>
@@ -70,11 +71,18 @@
     <artifactId>commons-lang</artifactId>
     <version>${commons.lang.version}</version>
   </dependency>
-  <!-- for report generation -->
+  <!-- report generation -->
   <dependency>
     <groupId>com.webfirmframework</groupId>
     <artifactId>wffweb</artifactId>
     <version>${wffweb.version}</version>
+  </dependency>
+  <!-- test dependencies -->
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>${junit.version}</version>
+    <scope>test</scope>
   </dependency>
 </dependencies>
   <build>

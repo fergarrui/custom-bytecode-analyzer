@@ -16,6 +16,7 @@
  */
 package net.nandgr.cba;
 
+import net.nandgr.cba.cli.CliHelper;
 import net.nandgr.cba.report.ReportBuilder;
 import net.nandgr.cba.report.ReportItem;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class JarWalker {
   public JarWalker(String path, int maxThreads) throws ReflectiveOperationException, IOException {
     this.path = path;
     this.executorService  = Executors.newFixedThreadPool(maxThreads);
-    this.byteCodeAnalyzer = new CustomByteCodeAnalyzer();
+    this.byteCodeAnalyzer = new CustomByteCodeAnalyzer(CliHelper.hasCustomFile(), CliHelper.hasChecks(), CliHelper.getRules());
   }
 
   public void walk() throws IOException {
