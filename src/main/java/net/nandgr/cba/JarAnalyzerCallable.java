@@ -58,7 +58,7 @@ public class JarAnalyzerCallable implements Callable {
             // retrieving a new inputStream - do not extract variable
             List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(zipFile.getInputStream(zipEntry));
 
-            File decompiledFile = null;
+            String decompiledFile = null;
             if (!analyzeReportItems.isEmpty()) {
               Decompiler decompiler = new ZipEntryDecompiler();
               // retrieving a new inputStream - do not extract variable
@@ -75,7 +75,7 @@ public class JarAnalyzerCallable implements Callable {
     return reportItems;
   }
 
-  public static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className, File decompiledFile) {
+  public static void addContextToReportItems(List<ReportItem> reportItems, String jarPath, String className, String decompiledFile) {
     reportItems.stream().forEach(reportItem -> {
       reportItem.setJarPath(jarPath);
       reportItem.setClassName(className);

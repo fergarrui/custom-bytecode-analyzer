@@ -21,5 +21,5 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface Decompiler {
-  File decompile(InputStream inputStream, String entryName) throws IOException;
+  String decompile(InputStream inputStream, String entryName) throws IOException;
 }

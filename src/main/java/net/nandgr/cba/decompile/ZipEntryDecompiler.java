@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import net.nandgr.cba.cli.CliHelper;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +21,16 @@ public class ZipEntryDecompiler implements Decompiler {
   private static final String DECOMPILED_DIR = "decompiled/";
 
   @Override
-  public File decompile(InputStream inputStream, String entryName) throws IOException {
+  public String decompile(InputStream inputStream, String entryName) throws IOException {
     logger.debug("Decompiling... {}", entryName);
     File tempFile = createTempFile(entryName, inputStream);
     tempFile.deleteOnExit();
+
     String decompiledFileName = getDecompiledFileName(entryName);
     File decompiledFile = new File(decompiledFileName);
     decompiledFile.getParentFile().mkdirs();
-    PrintWriter pw = new PrintWriter(decompiledFile);
+
+    StringWriter pw = new StringWriter();
     try {
       com.strobel.decompiler.Decompiler.decompile(tempFile.getAbsolutePath(), new PlainTextOutput(pw));
     } catch (Exception e) {
@@ -34,7 +38,10 @@ public class ZipEntryDecompiler implements Decompiler {
       throw e;
     }
     pw.flush();
-    return decompiledFile;
+
+    String decompiledFileContent = pw.toString();
+    FileUtils.writeStringToFile(decompiledFile, decompiledFileContent);
+    return decompiledFileContent;
   }
 
   private static File createTempFile(String entryName, InputStream inputStream) throws IOException {

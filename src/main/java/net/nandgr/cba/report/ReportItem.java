@@ -16,7 +16,6 @@
  */
 package net.nandgr.cba.report;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class ReportItem {
 
   private String jarPath = "";
   private String className = "";
-  private File decompiledFile;
+  private String decompiledFile;
   private final String ruleName;
   private final boolean showInReport;
   private Map<String,String> properties = new HashMap<>();
@@ -58,7 +57,7 @@ public class ReportItem {
     return showInReport;
   }
 
-  public File getDecompiledFile() {
+  public String getDecompiledFile() {
     return decompiledFile;
   }
 
@@ -71,7 +70,7 @@ public class ReportItem {
     return this;
   }
 
-  public void setDecompiledFile(File decompiledFile) {
+  public void setDecompiledFile(String decompiledFile) {
     this.decompiledFile = decompiledFile;
   }
 }

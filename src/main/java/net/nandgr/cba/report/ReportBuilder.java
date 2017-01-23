@@ -16,28 +16,19 @@
  */
 package net.nandgr.cba.report;
 
-import com.webfirmframework.wffweb.tag.html.Body;
-import com.webfirmframework.wffweb.tag.html.H4;
-import com.webfirmframework.wffweb.tag.html.Html;
-import com.webfirmframework.wffweb.tag.html.P;
-import com.webfirmframework.wffweb.tag.html.TitleTag;
-import com.webfirmframework.wffweb.tag.html.attribute.CellSpacing;
-import com.webfirmframework.wffweb.tag.html.metainfo.Head;
-import com.webfirmframework.wffweb.tag.html.tables.Table;
-import com.webfirmframework.wffweb.tag.html.tables.Td;
-import com.webfirmframework.wffweb.tag.html.tables.Tr;
-import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import com.google.common.collect.Lists;
+import java.io.StringWriter;
 import net.nandgr.cba.custom.visitor.helper.StringsHelper;
 import net.nandgr.cba.cli.CliHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,82 +62,31 @@ public class ReportBuilder {
         reportFileIndex++;
       }
       logger.info(reportItemList.size() + " issue(s) found for \"" + ruleName + "\". Report created in: " + reportsDirectory.getAbsolutePath());
-    } catch (IOException | ParserConfigurationException e) {
+    } catch (IOException e) {
       logger.error("Error when saving the report.", e);
     }
   }
 
-  private static List<String> generateHtmlChunks(List<ReportItem> reportItemList) throws ParserConfigurationException {
-    Iterator<ReportItem> reportItemIterator = reportItemList.iterator();
+  private static List<String> generateHtmlChunks(List<ReportItem> reportItemList) {
     List<String> htmlChunks = new ArrayList<>();
-    if (!reportItemIterator.hasNext()) {
-      htmlChunks.add(createEmptyReport());
-    }
-    int reportItemsCounter = 0;
-    Html html = null;
-    Body body = null;
+
+    VelocityEngine velocityEngine = new VelocityEngine();
+    velocityEngine.init();
+    Template template = velocityEngine.getTemplate("./src/main/resources/report/report_template.html");
+
     int maxItemsInReport = CliHelper.getMaxItemsInReport();
-    while(reportItemIterator.hasNext()) {
-      if (reportItemsCounter % maxItemsInReport == 0) {
-        if (reportItemsCounter != 0) {
-          htmlChunks.add(html.toHtmlString());
-        }
-        html = new Html(null);
-        html.setPrependDocType(true);
-        Head head = new Head(html);
-        TitleTag title = new TitleTag(head);
-        new NoTag(title, "Report for: " + CliHelper.getPathToAnalyze());
-        body = new Body(html);
-      }
+    List<List<ReportItem>> reportItemsChunks = Lists.partition(reportItemList, maxItemsInReport);
 
-      ReportItem reportItem = reportItemIterator.next();
-      H4 itemTittle = new H4(body);
-      new NoTag(itemTittle, reportItem.getRuleName());
-      Table itemTable = new Table(body, new CellSpacing(10));
+    for (List<ReportItem> reportItemsChunk : reportItemsChunks ) {
+      VelocityContext velocityContext = new VelocityContext();
+      velocityContext.put("jarPath", CliHelper.getPathToAnalyze());
+      velocityContext.put("ruleName", reportItemsChunk.get(0).getRuleName());
+      velocityContext.put("reportItems", reportItemsChunk);
 
-      Tr jarName = new Tr(itemTable);
-      Td jarNameKey = new Td(jarName);
-      new NoTag(jarNameKey, "Jar name: ");
-      Td jarNameValue = new Td(jarName);
-      new NoTag(jarNameValue, reportItem.getJarPath());
-
-      Tr className = new Tr(itemTable);
-      Td classNameKey = new Td(className);
-      new NoTag(classNameKey, "Class name: ");
-      Td classNameValue = new Td(className);
-      new NoTag(classNameValue, reportItem.getClassName());
-
-      for (Map.Entry<String, String> propertiesEntry : reportItem.getProperties().entrySet()) {
-        String propertyName = propertiesEntry.getKey();
-        String propertyValue = propertiesEntry.getValue();
-
-        if (propertyName.startsWith("<") && propertyName.endsWith(">")) {
-          propertyName = propertyName.substring(1, propertyName.length()-1);
-        }
-        Tr propertyTr = new Tr(itemTable);
-        Td propertyTd = new Td(propertyTr);
-        new NoTag(propertyTd, propertyName + ": ");
-        Td lineNumberValue = new Td(propertyTr);
-        new NoTag(lineNumberValue, propertyValue);
-      }
-
-      if (!reportItemIterator.hasNext()) {
-        htmlChunks.add(html.toHtmlString());
-      }
-      reportItemsCounter++;
+      StringWriter stringWriter = new StringWriter();
+      template.merge(velocityContext, stringWriter);
+      htmlChunks.add(stringWriter.toString());
     }
     return htmlChunks;
   }
-
-  private static String createEmptyReport() {
-    Html html = new Html(null);
-    html.setPrependDocType(true);
-    Head head = new Head(html);
-    TitleTag title = new TitleTag(head);
-    new NoTag(title, "Report for: " + CliHelper.getPathToAnalyze());
-    Body body = new Body(html);
-    P p = new P(body);
-    new NoTag(p, "No issues found.");
-    return html.toHtmlString();
-    }
 }
