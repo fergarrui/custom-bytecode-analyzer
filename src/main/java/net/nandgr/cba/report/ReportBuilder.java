@@ -18,6 +18,7 @@ package net.nandgr.cba.report;
 
 import com.google.common.collect.Lists;
 import java.io.StringWriter;
+import java.util.Properties;
 import net.nandgr.cba.custom.visitor.helper.StringsHelper;
 import net.nandgr.cba.cli.CliHelper;
 import java.io.File;
@@ -71,8 +72,11 @@ public class ReportBuilder {
     List<String> htmlChunks = new ArrayList<>();
 
     VelocityEngine velocityEngine = new VelocityEngine();
-    velocityEngine.init();
-    Template template = velocityEngine.getTemplate("./src/main/resources/report/report_template.html");
+    Properties p = new Properties();
+    p.setProperty("resource.loader", "class");
+    p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+    velocityEngine.init(p);
+    Template template = velocityEngine.getTemplate("report/report_template.html");
 
     int maxItemsInReport = CliHelper.getMaxItemsInReport();
     List<List<ReportItem>> reportItemsChunks = Lists.partition(reportItemList, maxItemsInReport);
