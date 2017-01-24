@@ -16,7 +16,6 @@
  */
 package net.nandgr.cba.decompile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 

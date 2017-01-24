@@ -62,15 +62,17 @@ public class JarWalker {
     logger.info("Shutting down walker...");
     executorService.shutdown();
     try {
+      logger.info("Waiting for analysis... This may take a while");
       executorService.awaitTermination(1, TimeUnit.DAYS);
     } catch (InterruptedException e) {
       logger.error("Executor service interrupted. This shouldn't happen.", e);
       Thread.currentThread().interrupt();
     }
+    logger.info("Grouping report items...");
+    Map<String, List<ReportItem>> ruleNameReportItemsGrouped = groupReportItems(reportItemsFutureList);
     executorService.shutdownNow();
     logger.info("Walker shutdown.");
     logger.info("Building report...");
-    Map<String, List<ReportItem>> ruleNameReportItemsGrouped = groupReportItems(reportItemsFutureList);
     ReportBuilder.saveAsHtml(ruleNameReportItemsGrouped);
   }
 

@@ -20,14 +20,13 @@ usage: java -jar cba-cli.jar [OPTIONS] -a DIRECTORY_TO_ANALYZE
                                  number of issues found exceeds this
                                  value, the report will be split into
                                  different files. Useful if expecting too
-                                 many issues in the report. Default: 500.
+                                 many issues in the report. Default: 50.
  -o,--output <outputDir>         Directory to save the report. Warning -
                                  if there are already saved reports in
                                  this directory they will be overwritten.
                                  Default is "report".
  -v,--verbose-debug              Increase verbosity to debug mode.
- -vv,--verbose-trace             Increase verbosity to trace mode.
-
+ -vv,--verbose-trace             Increase verbosity to trace mode - makes it slower, use it only when you need.
 ```
 
 ## Custom JSON rules
@@ -90,7 +89,7 @@ Anyway, below are listed examples for every rule.
 #### Find custom deserialization
 If we need to find classes with custom deserialization, we can do it quite easily. A class defines custom deserialization by implementing ```private void readObject(ObjectInputStream in)```. So we only need to find all classes where that method is defined. It would be enough just to define a rule as:
 
-```
+```json
 {
 	"rules": [{
 		"name": "Custom deserialization",
@@ -111,7 +110,7 @@ It will report methods with ```private``` visibility, ```readObject``` as name a
 
 In this case, one rule with two methods have to be defined. The same one than in the previous example for deserialization, and a new one to match ```private void writeObject(ObjectOutputStream out)```. As shown in the JSON structure above, the property rules.rule.methods is an array of methods, so a rule like this can be written:
 
-```
+```json
 {
   "rules": [{
     "name": "Custom serialization and deserialization",
@@ -137,7 +136,7 @@ The property ```report``` was set to false to avoid reporting twice for the same
 
 #### Find all method definitions
 If a property is not defined, it will always match as true. For example, this rule would return all methods definitions:
-```
+```json
 {
 	"rules": [{
 		"name": "Method definitions",
@@ -150,7 +149,7 @@ If a property is not defined, it will always match as true. For example, this ru
 #### Find String.equals method invocations
 
 Method invocations can also be found. The JSON in this case would be:
-```
+```json
 {
 	"rules": [{
 		"name": "String equals",
@@ -168,7 +167,7 @@ The property ```owner``` specifies the class containing the method.
 #### Reflection method invoke
 
 Another method invocation example a bit more useful than the previous one:
-```
+```json
 {
 	"rules": [{
 		"name": "Method invocation by reflection",
@@ -186,7 +185,7 @@ Another method invocation example a bit more useful than the previous one:
 
 It is the same than any method invocation, but the name of the method in this case, should be ```<init>```.
 
-```
+```json
 {
   "rules": [{
     "name" : "String instantiation",
@@ -200,7 +199,7 @@ It is the same than any method invocation, but the name of the method in this ca
 }
 ```
 This rule will find occurrences of:
-```
+```java
 [...]
 String s = new String("foo");
 [...]
@@ -209,14 +208,14 @@ String s = new String("foo");
 #### Deserialization usage
 In this example, we want to find deserialization usages (not classes defining serialization behaviors like in the previous examples). Deserialization happens when ```ObjectInputStream.readObject()``` is invoked. for example in this code snippet:
 
-```
+```java
 ObjectInputStream in = new ObjectInputStream(fileInputStream);
 Object o = in.readObject();
 ```
 
 So we need to find method invocations from ```ObjectInputStream``` named ```readObject```. But it will find a lot of false positives in a researching context, because when a class defines custom deserialization, they make an invocation to this method inside a ```private void readObject(ObjectInputStream in)``` method, and that would pollute the report too much. If we want to exclude those cases and keep only genuine deserialization, ```notFrom``` property can be used:
 
-```
+```json
 {
 	"rules": [{
 		"name": "Deserialization usage",
@@ -237,14 +236,14 @@ This file will find ```java.io.ObjectInputStream.readObject()``` invocations if 
 
 A class compiled with this code will not be reported:
 
-```
+```java
 private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
       Object o = in.readObject();
 }
 ```
 But this one will be reported:
 
-```
+```java
 public Object deserializeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
       Object o = in.readObject();
       return o;
@@ -257,7 +256,7 @@ The property ```from``` can be set in invocations in exactly the same way than `
 
 The property ```superClass```  can be used in this case. If we want to find all classes extending ```javax.servlet.http.HttpServlet```, a rule can be:
 
-```
+```json
 {
   "rules": [{
     "name": "Java servlets",
@@ -271,7 +270,7 @@ The property ```superClass```  can be used in this case. If we want to find all 
 
 A rule can be written to find classes implementing an array of interfaces. if more than one interface is defined in the rule, the class has to implement all of them to be reported. If we want to find classes implementing ```javax.net.ssl.X509TrustManager```, the rule would be:
 
-```
+```json
 {
   "rules": [{
     "name": "X509TrustManager implementations",
@@ -287,7 +286,7 @@ Please note that ```interfaces``` is an *array*, so make sure you add the string
 Annotations are also supported. Multiple annotations properties can be defined in a rule (finding class annotations), in methods o variables (parameters or local variables). If all of them are found in the analyzed class, it will be reported.
 For example, if we want to find Spring endpoints, we would search for classes or methods annotated with ```org.springframework.web.bind.annotation.RequestMapping```. So, the rule can be:
 
-```
+```json
 {
   "rules": [{
     "name": "Spring endpoint - class annotation",
@@ -310,7 +309,7 @@ For example, if we want to find Spring endpoints, we would search for classes or
 
 The property ```rule.fields``` can be used to find class fields. If we want to find private String fields with password names, a rule like this one could be used:
 
-```
+```json
 {
   "rules": [{
     "name" : "Password fields",
@@ -330,7 +329,7 @@ The property ```rule.fields``` can be used to find class fields. If we want to f
 To find variables, ```rule.variables``` can be used. This property will report local variables and method arguments variables.
 If we want to find all variables of type ```javax.servlet.http.Part```, a rule could be:
 
-```
+```json
 {
   "rules": [{
     "name" : "Servlet upload file",
@@ -346,7 +345,7 @@ If we want to find all variables of type ```javax.servlet.http.Part```, a rule c
 #### Define multiple rules
 Multiple rules can be defined in the same JSON file. They will be processed and reported separately and they will not affect each other. We can combine some of the previous examples rules:
 
-```
+```json
 {
 	"rules": [{
 		"name": "Custom deserialization",
@@ -374,6 +373,15 @@ Here, we have two rules ("Custom deserialization" and "Method invocation by refl
 ## Custom Java rules
 
 The project can be downloaded and built to add more complex custom rules in Java code that are not covered by the JSON format. There are already three examples under the package ```net.nandgr.cba.visitor.checks```. Those are ```CustomDeserializationCheck, DeserializationCheck and InvokeMethodCheck```. You can create your own rules by extending ```net.nandgr.cba.custom.visitor.base.CustomAbstractClassVisitor```.
+
+## Reports
+
+As mentioned above, the reports are created by default under ```report``` folder. Every rule will have a separate file unless they have the same name.
+If the report is too big, you can split it using the ```-i,--items-report <maxItems>``` parameter, each of them will hold the argument specified or less (if it is the last one).
+Every reported item, specifies the jar where it is found, the class name and the method name (if it is relevant). It also shows the decompiled version of the class to ease a quick visual check.
+How the items are shown:
+
+
 
 ## Command line examples
 

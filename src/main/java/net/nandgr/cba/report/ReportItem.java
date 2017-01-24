@@ -18,6 +18,7 @@ package net.nandgr.cba.report;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class ReportItem {
 
@@ -61,6 +62,10 @@ public class ReportItem {
     return decompiledFile;
   }
 
+  public String getDecompiledFileHtml() {
+    return StringEscapeUtils.escapeHtml(decompiledFile);
+  }
+
   public Map<String, String> getProperties() {
     return properties;
   }
@@ -72,5 +77,33 @@ public class ReportItem {
 
   public void setDecompiledFile(String decompiledFile) {
     this.decompiledFile = decompiledFile;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ReportItem)) return false;
+
+    ReportItem that = (ReportItem) o;
+
+    if (isShowInReport() != that.isShowInReport()) return false;
+    if (getJarPath() != null ? !getJarPath().equals(that.getJarPath()) : that.getJarPath() != null) return false;
+    if (getClassName() != null ? !getClassName().equals(that.getClassName()) : that.getClassName() != null)
+      return false;
+    if (getDecompiledFile() != null ? !getDecompiledFile().equals(that.getDecompiledFile()) : that.getDecompiledFile() != null)
+      return false;
+    if (getRuleName() != null ? !getRuleName().equals(that.getRuleName()) : that.getRuleName() != null) return false;
+    return getProperties() != null ? getProperties().equals(that.getProperties()) : that.getProperties() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getJarPath() != null ? getJarPath().hashCode() : 0;
+    result = 31 * result + (getClassName() != null ? getClassName().hashCode() : 0);
+    result = 31 * result + (getDecompiledFile() != null ? getDecompiledFile().hashCode() : 0);
+    result = 31 * result + (getRuleName() != null ? getRuleName().hashCode() : 0);
+    result = 31 * result + (isShowInReport() ? 1 : 0);
+    result = 31 * result + (getProperties() != null ? getProperties().hashCode() : 0);
+    return result;
   }
 }

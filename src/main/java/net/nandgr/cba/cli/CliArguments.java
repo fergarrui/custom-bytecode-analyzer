@@ -36,7 +36,7 @@ public class CliArguments {
 
   private static Options options = new Options();
   public static final String MAX_THREADS_DEFAULT = "1";
-  public static final String MAX_ITEMS_IN_REPORT_DEFAULT = "500";
+  public static final String MAX_ITEMS_IN_REPORT_DEFAULT = "50";
   public static final String OUTPUT_DEFAULT = "report";
 
   private CliArguments() {
@@ -110,7 +110,7 @@ public class CliArguments {
     Option verboseTrace = Option
             .builder("vv")
             .longOpt("verbose-trace")
-            .desc("Increase verbosity to trace mode.")
+            .desc("Increase verbosity to trace mode  - makes it slower, use it only when you need.")
             .build();
 
     options.addOption(help);

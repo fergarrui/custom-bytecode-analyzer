@@ -20,6 +20,7 @@ import net.nandgr.cba.custom.visitor.base.CustomAbstractMethodInsnVisitor;
 import net.nandgr.cba.report.ReportItem;
 import net.nandgr.cba.custom.model.Invocation;
 import net.nandgr.cba.custom.visitor.helper.RuleHelper;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class CustomInvocationFinderInsnVisitor extends CustomAbstractMethodInsnV
     String desc = getMethodInsnNode().desc;
     logger.trace("visitMethodInsn: owner={} name={} desc={}", owner, name, desc);
     if (RuleHelper.isValidMethodInvocation(methodInvocation, owner, name, desc)) {
-      ReportItem reportItem = new ReportItem(getRuleName(), showInReport()).addProperty("Method Name", name);
+      ReportItem reportItem = new ReportItem(getRuleName(), showInReport()).addProperty("Method Name", StringEscapeUtils.escapeHtml(name));
       itemsFound().add(reportItem);
       setIssueFound(true);
     }

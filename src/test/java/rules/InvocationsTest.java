@@ -18,18 +18,18 @@ public class InvocationsTest extends AbstractTest {
     runTests();
 
     List<ReportItem> reportItems1 = getReportItems("invocations1");
-    assertEquals(5, reportItems1.size());
+    assertEquals(3, reportItems1.size());
     assertTrue(matchClassName(reportItems1, "InvocationsTestFile$A.class"));
     assertTrue(matchClassName(reportItems1, "InvocationsTestFile$B.class"));
     assertTrue(matchClassName(reportItems1, "InvocationsTestFile$D.class"));
 
     List<ReportItem> reportItems2 = getReportItems("invocations2");
-    assertEquals(3, reportItems2.size());
+    assertEquals(2, reportItems2.size());
     assertTrue(matchClassName(reportItems2, "InvocationsTestFile$B.class"));
     assertTrue(matchClassName(reportItems2, "InvocationsTestFile$D.class"));
 
     List<ReportItem> reportItems3 = getReportItems("invocations3");
-    assertEquals(6, reportItems3.size()); // 2 toString + 1 equals in each class
+    assertEquals(4, reportItems3.size());
     assertTrue(matchClassName(reportItems3, "InvocationsTestFile$A.class"));
     assertTrue(matchClassName(reportItems3, "InvocationsTestFile$B.class"));
 
