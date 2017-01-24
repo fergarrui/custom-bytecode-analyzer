@@ -381,7 +381,7 @@ If the report is too big, you can split it using the ```-i,--items-report <maxIt
 Every reported item, specifies the jar where it is found, the class name and the method name (if it is relevant). It also shows the decompiled version of the class to ease a quick visual check.
 How the items are shown:
 
-
+![Report example](images/report_image.png)
 
 ## Command line examples
 
