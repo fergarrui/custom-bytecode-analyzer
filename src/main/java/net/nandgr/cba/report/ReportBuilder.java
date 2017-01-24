@@ -76,7 +76,7 @@ public class ReportBuilder {
     p.setProperty("resource.loader", "class");
     p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
     velocityEngine.init(p);
-    Template template = velocityEngine.getTemplate("report/report_template.html");
+    Template template = velocityEngine.getTemplate("template/report_template.html");
 
     int maxItemsInReport = CliHelper.getMaxItemsInReport();
     List<List<ReportItem>> reportItemsChunks = Lists.partition(reportItemList, maxItemsInReport);

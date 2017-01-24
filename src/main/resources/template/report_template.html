@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$jarPath</title>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=java"></script>
+</head>
+<body>
+<h2>Report for rule "$ruleName" for path: $jarPath</h2>
+<div>
+    #foreach( $report in $reportItems)
+        <table cellspacing="10">
+            <tr>
+                <td>Jar name: </td>
+                <td>$report.jarPath</td>
+            </tr>
+            <tr>
+                <td>Class name: </td>
+                <td>$report.className</td>
+            </tr>
+            #foreach( $prop in $report.properties.entrySet())
+            <tr>
+                <td>
+                    $prop.key :
+                </td>
+                <td>
+                    $prop.value
+                </td>
+            </tr>
+            #end
+        </table>
+        <pre class="prettyprint" style="max-height: 30pc; overflow-y: scroll; width:80%">$report.getDecompiledFileHtml()</pre>
+    #end
+</div>
+</body>
+</html>

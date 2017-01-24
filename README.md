@@ -379,7 +379,7 @@ The project can be downloaded and built to add more complex custom rules in Java
 As mentioned above, the reports are created by default under ```report``` folder. Every rule will have a separate file unless they have the same name.
 If the report is too big, you can split it using the ```-i,--items-report <maxItems>``` parameter, each of them will hold the argument specified or less (if it is the last one).
 Every reported item, specifies the jar where it is found, the class name and the method name (if it is relevant). It also shows the decompiled version of the class to ease a quick visual check.
-How the items are shown:
+Example of how the items are shown for a rule to find ```java.io.File``` instantiations:
 
 ![Report example](images/report_image.png)
 
