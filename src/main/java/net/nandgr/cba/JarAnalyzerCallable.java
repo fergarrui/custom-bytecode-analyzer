@@ -16,7 +16,6 @@
  */
 package net.nandgr.cba;
 
-import java.io.InputStream;
 import net.nandgr.cba.decompile.Decompiler;
 import net.nandgr.cba.decompile.ZipEntryDecompiler;
 import net.nandgr.cba.report.ReportItem;
