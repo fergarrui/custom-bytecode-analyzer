@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.objectweb.asm.tree.ClassNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,15 +160,12 @@ public class CustomByteCodeAnalyzer implements ByteCodeAnalyzer {
   }
 
   @Override
-  public List<ReportItem> analyze(InputStream inputStream) {
+  public List<ReportItem> analyze(ClassNode classNode) {
     logger.debug("Analyzing file... ");
     final List<ReportItem> reportItems = new ArrayList<>();
     try {
-      // bytes backup to create a ByteArrayInputStream at every analysis, since ASM ClassReader closes the InputStream
-      byte[] inputStreamBytes = IOUtils.toByteArray(inputStream);
       for (RuleVisitorsAnalyzer ruleVisitorsAnalyzer : ruleVisitorsAnalyzers) {
-        InputStream byteArrayInputStream = new ByteArrayInputStream(inputStreamBytes);
-        reportItems.addAll(ruleVisitorsAnalyzer.runRules(byteArrayInputStream));
+        reportItems.addAll(ruleVisitorsAnalyzer.runRules(classNode));
       }
     } catch (Exception e) {
       logger.error("Error while analyzing inputStream", e);

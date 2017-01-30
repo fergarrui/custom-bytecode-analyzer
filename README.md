@@ -383,6 +383,30 @@ Example of how the items are shown for a rule to find ```java.io.File``` instant
 
 ![Report example](images/report_image.png)
 
+### Call graph
+
+When searching for security bugs it is very useful to have a call graph. At the moment, a simple [DOT](https://en.wikipedia.org/wiki/DOT_(graph_description_language)) compatible file is created under the ```report``` directory.
+The file is ```call-graph.dot``` and it would look like this (this is an extremely simple example):
+
+```
+graph callGraph {
+"demo.callgraph.TestGraph1:method1" -- "demo.callgraph.TestGraph2:method2"
+"demo.callgraph.TestGraph3:method3" -- "demo.callgraph.TestGraph2:method2"
+}
+```
+
+To display it in a visual view, ```DOT``` can be used (or any compatible software). For example, to convert the file to ```svg```:
+
+```
+dot -Tsvg call-graph.dot -o call-graph.svg
+```
+
+```DOT``` can be installed in Debian based systems using ```sudo apt-get install graphviz```.
+
+It will create a SVG file named ```call-graph.svg``` that can be converted into PNG or visualized using programs like ```inkscape``` or just ```firefox```.
+
+A more sophisticated version of this feature will be developed in future versions.
+
 ## Command line examples
 
 #### Run an analysis using a JSON file

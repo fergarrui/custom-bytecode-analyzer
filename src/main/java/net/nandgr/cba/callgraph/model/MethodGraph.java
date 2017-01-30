@@ -51,4 +51,12 @@ public class MethodGraph {
     result = 31 * result + getName().hashCode();
     return result;
   }
+
+  @Override
+  public String toString() {
+    return "MethodGraph{" +
+            "owner='" + owner + '\'' +
+            ", name='" + name + '\'' +
+            '}';
+  }
 }
