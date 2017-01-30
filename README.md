@@ -395,7 +395,7 @@ graph callGraph {
 }
 ```
 
-To display it in a visual view, ```DOT``` can be used (or any compatible software). For example, to convert the file to ```svg```:
+To display it in a visual way, ```DOT``` can be used (or any compatible software). For example, to convert the file to ```svg```:
 
 ```
 dot -Tsvg call-graph.dot -o call-graph.svg
