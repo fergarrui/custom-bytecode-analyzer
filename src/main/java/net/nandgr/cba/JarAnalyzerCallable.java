@@ -16,6 +16,7 @@
  */
 package net.nandgr.cba;
 
+import net.nandgr.cba.callgraph.runnable.ClassCallGraph;
 import net.nandgr.cba.decompile.Decompiler;
 import net.nandgr.cba.decompile.ZipEntryDecompiler;
 import net.nandgr.cba.report.ReportItem;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +58,13 @@ public class JarAnalyzerCallable implements Callable {
             logger.debug("Class found: {}", zipEntryName);
 
             // retrieving a new inputStream - do not extract variable
-            List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(zipFile.getInputStream(zipEntry));
+            ClassReader classReader = new ClassReader(zipFile.getInputStream(zipEntry));
+            ClassNode classNode = new ClassNode();
+            classReader.accept(classNode,0);
+            List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(classNode);
+
+            ClassCallGraph classCallGraph = new ClassCallGraph(classNode);
+            classCallGraph.createGraph();
 
             String decompiledFile = null;
             if (!analyzeReportItems.isEmpty()) {
@@ -71,6 +80,7 @@ public class JarAnalyzerCallable implements Callable {
           }
         });
       zipFile.close();
+
     return reportItems;
   }
 

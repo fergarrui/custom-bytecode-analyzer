@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import net.nandgr.cba.ByteCodeAnalyzer;
 import net.nandgr.cba.CustomByteCodeAnalyzer;
@@ -16,6 +18,8 @@ import net.nandgr.cba.JarAnalyzerCallable;
 import net.nandgr.cba.custom.model.Rules;
 import net.nandgr.cba.report.ReportItem;
 import org.apache.commons.io.IOUtils;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 
 public abstract class AbstractTest {
 
@@ -23,6 +27,9 @@ public abstract class AbstractTest {
   private final String RESOURCES_PATH = "/rulejson";
   private final String PATH;
   private List<ReportItem> reportItems = new ArrayList<>();
+  // Refactor to a cli argument maybe?
+  private final int GRAPH_MAX_THREADS = 20;
+  private final ExecutorService graphExecutorService = Executors.newFixedThreadPool(GRAPH_MAX_THREADS);
 
   public AbstractTest(String path) {
     this.PATH = path;
@@ -38,7 +45,10 @@ public abstract class AbstractTest {
               .forEach(filePath -> {
                 try {
                   InputStream inputStream = Files.newInputStream(filePath);
-                  List<ReportItem> reportItems = byteCodeAnalyzer.analyze(inputStream);
+                  ClassReader classReader = new ClassReader(inputStream);
+                  ClassNode classNode = new ClassNode();
+                  classReader.accept(classNode,0);
+                  List<ReportItem> reportItems = byteCodeAnalyzer.analyze(classNode);
                   JarAnalyzerCallable.addContextToReportItems(reportItems, "test", filePath.getFileName().toString(), null);
                   this.reportItems.addAll(reportItems);
                 } catch (IOException e) {

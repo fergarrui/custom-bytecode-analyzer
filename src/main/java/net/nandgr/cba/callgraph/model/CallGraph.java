@@ -51,4 +51,12 @@ public class CallGraph {
     result = 31 * result + getCalled().hashCode();
     return result;
   }
+
+  @Override
+  public String toString() {
+    return "CallGraph{" +
+            "caller=" + caller +
+            ", called=" + called +
+            '}';
+  }
 }
