@@ -64,7 +64,7 @@ public class JarAnalyzerCallable implements Callable {
             List<ReportItem> analyzeReportItems = byteCodeAnalyzer.analyze(classNode);
 
             ClassCallGraph classCallGraph = new ClassCallGraph(classNode);
-            classCallGraph.createGraph();
+            classCallGraph.populateClassGraph();
 
             String decompiledFile = null;
             if (!analyzeReportItems.isEmpty()) {

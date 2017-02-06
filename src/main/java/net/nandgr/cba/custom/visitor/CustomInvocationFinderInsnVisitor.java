@@ -28,9 +28,11 @@ public class CustomInvocationFinderInsnVisitor extends CustomAbstractMethodInsnV
 
   private static final Logger logger = LoggerFactory.getLogger(CustomInvocationFinderInsnVisitor.class);
   private final Invocation methodInvocation;
+  private final String calledFrom;
 
-  public CustomInvocationFinderInsnVisitor(Invocation methodInvocation, String ruleName) {
+  public CustomInvocationFinderInsnVisitor(String calledFrom, Invocation methodInvocation, String ruleName) {
     super(ruleName);
+    this.calledFrom = calledFrom;
     this.methodInvocation = methodInvocation;
   }
 
@@ -41,7 +43,10 @@ public class CustomInvocationFinderInsnVisitor extends CustomAbstractMethodInsnV
     String desc = getMethodInsnNode().desc;
     logger.trace("visitMethodInsn: owner={} name={} desc={}", owner, name, desc);
     if (RuleHelper.isValidMethodInvocation(methodInvocation, owner, name, desc)) {
-      ReportItem reportItem = new ReportItem(getRuleName(), showInReport()).addProperty("Method Name", StringEscapeUtils.escapeHtml(name));
+      ReportItem reportItem = new ReportItem(getRuleName(), showInReport())
+              .addProperty("Method Name", calledFrom)
+              .addProperty("Found method name", StringEscapeUtils.escapeHtml(name));
+
       itemsFound().add(reportItem);
       setIssueFound(true);
     }

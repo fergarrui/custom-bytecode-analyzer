@@ -16,7 +16,7 @@
  */
 package net.nandgr.cba;
 
-import net.nandgr.cba.callgraph.model.Graph;
+import net.nandgr.cba.callgraph.model.GraphHolder;
 import net.nandgr.cba.cli.CliHelper;
 import net.nandgr.cba.report.ReportBuilder;
 import net.nandgr.cba.report.ReportItem;
@@ -69,14 +69,14 @@ public class JarWalker {
       logger.error("Executor service interrupted. This shouldn't happen.", e);
       Thread.currentThread().interrupt();
     }
-    logger.info("Grouping report items...");
     Map<String, List<ReportItem>> ruleNameReportItemsGrouped = groupReportItems(reportItemsFutureList);
     executorService.shutdownNow();
     logger.info("Walker shutdown.");
     logger.info("Building report...");
     ReportBuilder.saveAsHtml(ruleNameReportItemsGrouped);
-    logger.info("Saving call graph...");
-    Graph.saveCallGraph();
+    GraphHolder.createGraph();
+    GraphHolder.filterGraph(ruleNameReportItemsGrouped);
+    GraphHolder.saveCallGraph();
   }
 
   private Map<String, List<ReportItem>> groupReportItems(List<Future<List<ReportItem>>> reportItemsFutureList) {

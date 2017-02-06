@@ -18,6 +18,8 @@ package net.nandgr.cba.custom.visitor.helper;
 
 public class StringsHelper {
 
+  private static final String CLASS_SUFFIX = ".class";
+
   private StringsHelper() {
     throw new IllegalAccessError("Cannot instantiate this utility class.");
   }
@@ -43,5 +45,12 @@ public class StringsHelper {
 
     }
     return result;
+  }
+
+  public static String removeClassSuffix(String s) {
+    if (s.endsWith(CLASS_SUFFIX)) {
+      return s.substring(0, s.length()-CLASS_SUFFIX.length());
+    }
+    return s;
   }
 }

@@ -16,12 +16,12 @@
  */
 package net.nandgr.cba.callgraph.model;
 
-public class CallGraph {
+public class Call {
 
   private final MethodGraph caller;
   private final MethodGraph called;
 
-  public CallGraph(MethodGraph caller, MethodGraph called) {
+  public Call(MethodGraph caller, MethodGraph called) {
     this.caller = caller;
     this.called = called;
   }
@@ -37,12 +37,12 @@ public class CallGraph {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof CallGraph)) return false;
+    if (!(o instanceof Call)) return false;
 
-    CallGraph callGraph = (CallGraph) o;
+    Call call = (Call) o;
 
-    if (!getCaller().equals(callGraph.getCaller())) return false;
-    return getCalled().equals(callGraph.getCalled());
+    if (!getCaller().equals(call.getCaller())) return false;
+    return getCalled().equals(call.getCalled());
   }
 
   @Override
@@ -54,7 +54,7 @@ public class CallGraph {
 
   @Override
   public String toString() {
-    return "CallGraph{" +
+    return "Call{" +
             "caller=" + caller +
             ", called=" + called +
             '}';

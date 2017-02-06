@@ -68,7 +68,7 @@ public class CustomMethodInvocationVisitor extends CustomAbstractClassVisitor {
 
   private void processAndReport(MethodInsnNode methodInsnNode, int access, String name, Method notFrom, Method from) {
     if (RuleHelper.checkNotFrom(notFrom, access, name) && RuleHelper.checkFrom(from, access, name)) {
-      CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
+      CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(name, invocation, getRuleName());
       customInvocationFinderInsnVisitor.setNode(methodInsnNode);
       customInvocationFinderInsnVisitor.process();
       if (customInvocationFinderInsnVisitor.issueFound()) {
