@@ -16,8 +16,8 @@
  */
 package net.nandgr.cba.callgraph.runnable;
 
-import net.nandgr.cba.callgraph.model.CallGraph;
-import net.nandgr.cba.callgraph.model.Graph;
+import net.nandgr.cba.callgraph.model.Call;
+import net.nandgr.cba.callgraph.model.GraphHolder;
 import net.nandgr.cba.callgraph.model.MethodGraph;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -37,7 +37,7 @@ public class ClassCallGraph {
     this.classNode = classNode;
   }
 
-  public void createGraph() {
+  public void populateClassGraph() {
     String className = Type.getObjectType(classNode.name).getClassName();
     logger.debug("Creating graph for class {}" , className);
     for (MethodNode methodNode : classNode.methods) {
@@ -51,10 +51,10 @@ public class ClassCallGraph {
           String calledOwner = Type.getObjectType(methodInsnNode.owner).getClassName();
           String calledName = methodInsnNode.name;
           MethodGraph called = new MethodGraph(calledOwner, calledName);
-          CallGraph callGraph = new CallGraph(caller, called);
+          Call call = new Call(caller, called);
           if (!called.getOwner().equals("java.lang.Object") && !called.getName().equals("<init>")) {
-            logger.trace("Adding call graph: {}", callGraph.toString());
-            Graph.addCallGraph(callGraph);
+            logger.trace("Adding call graph: {}", call.toString());
+            GraphHolder.addCallGraph(call);
           }
         }
       }

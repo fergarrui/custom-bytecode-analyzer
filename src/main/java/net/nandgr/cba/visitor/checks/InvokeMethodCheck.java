@@ -65,7 +65,7 @@ public class InvokeMethodCheck extends CustomAbstractClassVisitor {
           Method notFrom = invocation.getNotFrom();
           Method from = invocation.getFrom();
           if (RuleHelper.checkNotFrom(notFrom, access, name) && RuleHelper.checkFrom(from, access, name)) {
-            CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(invocation, getRuleName());
+            CustomInvocationFinderInsnVisitor customInvocationFinderInsnVisitor = new CustomInvocationFinderInsnVisitor(name, invocation, getRuleName());
             customInvocationFinderInsnVisitor.setNode(methodInsnNode);
             customInvocationFinderInsnVisitor.process();
             if (customInvocationFinderInsnVisitor.issueFound()) {
