@@ -393,8 +393,8 @@ The file is ```call-graph.dot``` and it would look like this (this is an extreme
 
 ```
 graph callGraph {
-"demo.callgraph.TestGraph1:method1" -- "demo.callgraph.TestGraph2:method2"
-"demo.callgraph.TestGraph3:method3" -- "demo.callgraph.TestGraph2:method2"
+"demo.callgraph.Class1:method1" -- "demo.callgraph.Class2:method2"
+"demo.callgraph.Class3:method3" -- "demo.callgraph.Class2:method2"
 }
 ```
 
