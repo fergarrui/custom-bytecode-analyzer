@@ -386,7 +386,7 @@ Example of how the items are shown for a rule to find ```java.io.File``` instant
 ### Call graph
 
 When searching for security bugs it is very useful to have a call graph. At the moment, a simple [DOT](https://en.wikipedia.org/wiki/DOT_(graph_description_language)) compatible file is created under the ```report``` directory.
-The graph contains all the possible flows where the found issues can be invoked. For example, if a rule to find deserialization is used,
+The graph contains all the possible flows where the found issues can be invoked from. For example, if a rule to find deserialization is used,
 a graph containing all possible paths leading to the method that calls the deserialization will be generated.
 
 The file is ```call-graph.dot``` and it would look like this (this is an extremely simple example):
@@ -407,6 +407,10 @@ dot -Tsvg call-graph.dot -o call-graph.svg
 ```DOT``` can be installed in Debian based systems using ```sudo apt-get install graphviz```.
 
 It will create a SVG file named ```call-graph.svg``` that can be converted into PNG or visualized using programs like ```inkscape``` or just ```firefox```.
+
+A very simple example of the above file call-graph.dot, would be:
+
+![Graph example](images/graph.png)
 
 There are some limitations, like for example, if the searched item is in a ```java.lang.Runnable.run()``` or similar method, it will not find where the thread is executed from.
 Also, the graph is cleaning cycles to avoid ```StackOverflowError```s, it is made in a bit of conservative way so the memory of the system is not drained during an analysis of a large directory.
