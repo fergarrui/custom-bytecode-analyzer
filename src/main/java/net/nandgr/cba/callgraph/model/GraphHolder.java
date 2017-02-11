@@ -24,14 +24,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import net.nandgr.cba.callgraph.tree.InvocationGraph;
-import net.nandgr.cba.callgraph.tree.InvocationGraphImpl;
+import net.nandgr.cba.callgraph.graph.InvocationGraph;
+import net.nandgr.cba.callgraph.graph.InvocationGraphImpl;
 import net.nandgr.cba.cli.CliHelper;
 import net.nandgr.cba.custom.visitor.helper.StringsHelper;
 import net.nandgr.cba.report.ReportItem;
 import org.apache.commons.io.FileUtils;
-import org.jgrapht.alg.CycleDetector;
 import org.objectweb.asm.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,13 +74,15 @@ public class GraphHolder {
 
       String callerOwner = caller.getOwner();
       String callerName = caller.getName();
-      String calledOwner = called.getOwner();
-      String calledName = called.getName();
 
-      stringBuilder.append("\"").append(callerOwner).append(":").append(callerName).append("\"")
-        .append(" -- ")
-        .append("\"").append(calledOwner).append(":").append(calledName).append("\"")
-        .append(System.lineSeparator());
+      stringBuilder.append("\"").append(callerOwner).append(":").append(callerName).append("\"");
+        if (called != null) {
+          String calledOwner = called.getOwner();
+          String calledName = called.getName();
+          stringBuilder.append(" -- ")
+                    .append("\"").append(calledOwner).append(":").append(calledName).append("\"");
+        }
+        stringBuilder.append(System.lineSeparator());
     }
 
     stringBuilder.append("}").append(System.lineSeparator());

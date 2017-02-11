@@ -42,13 +42,13 @@ public class Call {
     Call call = (Call) o;
 
     if (!getCaller().equals(call.getCaller())) return false;
-    return getCalled().equals(call.getCalled());
+    return getCalled() != null ? getCalled().equals(call.getCalled()) : call.getCalled() == null;
   }
 
   @Override
   public int hashCode() {
     int result = getCaller().hashCode();
-    result = 31 * result + getCalled().hashCode();
+    result = 31 * result + (getCalled() != null ? getCalled().hashCode() : 0);
     return result;
   }
 

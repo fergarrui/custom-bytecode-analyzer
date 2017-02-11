@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.nandgr.cba.callgraph.tree;
+package net.nandgr.cba.callgraph.graph;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class InvocationGraphImpl implements InvocationGraph<MethodGraph, Call> {
   private final DirectedGraph<MethodGraph, DefaultEdge> directedGraph;
 
   public InvocationGraphImpl() {
-    this.directedGraph = new DefaultDirectedGraph<MethodGraph, DefaultEdge>(DefaultEdge.class);
+    this.directedGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
   }
 
   @Override
@@ -65,6 +65,8 @@ public class InvocationGraphImpl implements InvocationGraph<MethodGraph, Call> {
     }
     Set<DefaultEdge> incomingEdges = directedGraph.incomingEdgesOf(element);
     if (incomingEdges.isEmpty()) {
+      Call lonelyCall = new Call(element, null);
+      paths.add(lonelyCall);
       return paths;
     }
     for (DefaultEdge incomingEdge : incomingEdges) {

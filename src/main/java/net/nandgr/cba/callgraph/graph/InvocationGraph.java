@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.nandgr.cba.callgraph.tree;
+package net.nandgr.cba.callgraph.graph;
 
 import java.util.Collection;
-import java.util.Set;
 import net.nandgr.cba.callgraph.model.MethodGraph;
 
 /**
