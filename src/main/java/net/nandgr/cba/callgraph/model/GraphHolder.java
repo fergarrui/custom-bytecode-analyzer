@@ -18,12 +18,16 @@ package net.nandgr.cba.callgraph.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import net.nandgr.cba.callgraph.graph.InvocationGraph;
 import net.nandgr.cba.callgraph.graph.InvocationGraphImpl;
 import net.nandgr.cba.cli.CliHelper;
@@ -59,10 +63,37 @@ public class GraphHolder {
         String graphText = buildTextFromGraph(methodGraphs);
         FileUtils.writeStringToFile(callGraphFile, graphText);
         logger.info("Call graph written at: {}", callGraphFile.getAbsoluteFile());
+        dotToSVG(callGraphFile, callGraphFile.getParentFile().getAbsolutePath());
       } catch (IOException e) {
         logger.error("Error when creating call graph file.", e);
       }
     }
+  }
+
+  private static void dotToSVG(File graphFile, String destFolder) {
+    logger.info("Trying to convert to SVG... {}", graphFile.getName());
+    if (checkDotInClasspath()) {
+      logger.info("Dot found in PATH.");
+      if (!destFolder.endsWith(File.separator)) {
+        destFolder += File.separator;
+      }
+      String svgFileName = destFolder + graphFile.getName().replace(".dot", ".svg");
+      String[] command = {"dot", "-Tsvg", graphFile.getAbsolutePath(), "-o", svgFileName};
+      try {
+        Runtime.getRuntime().exec(command);
+      } catch (IOException e) {
+        logger.error("Error when trying to convert graph from DOT to SVG.");
+      }
+    } else {
+      logger.warn("DOT not found. Please install it and make sure it is in the path. To convert the graph manually use: dot -Tsvg {} -o call-graph.svg", graphFile.getAbsolutePath());
+    }
+  }
+
+  private static boolean checkDotInClasspath() {
+    final String DOT_EXEC_NAME = "dot";
+    return Arrays.stream(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
+            .map(Paths::get)
+            .anyMatch(path -> Files.exists(path.resolve(DOT_EXEC_NAME)));
   }
 
   private static String buildTextFromGraph(Collection<Call> calls) {
