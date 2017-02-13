@@ -404,7 +404,7 @@ To display it in a visual way, ```DOT``` can be used (or any compatible software
 dot -Tsvg call-graph.dot -o call-graph.svg
 ```
 
-```DOT``` can be installed in Debian based systems using ```sudo apt-get install graphviz```.
+This is done automatically by default if DOT is found in the system PATH. If not, ```DOT``` can be installed in Debian based systems using ```sudo apt-get install graphviz```.
 
 It will create a SVG file named ```call-graph.svg``` that can be converted into PNG or visualized using programs like ```inkscape``` or just ```firefox```.
 
