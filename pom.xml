@@ -6,7 +6,7 @@
 
   <groupId>net.nandgr.cba</groupId>
   <artifactId>custom-bytecode-analyzer</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
