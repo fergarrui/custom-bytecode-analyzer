@@ -3,11 +3,10 @@ target/
 
 # Intellij
 *.iml
+.idea/*
 
 # logs 
-
 *.log
 
 # app specific
-
 report/

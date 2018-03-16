@@ -42,8 +42,8 @@ public class App {
     long startTime = System.nanoTime();
     logger.info("Starting Analyzer...");
     try {
-      JarWalker jarWalker = new JarWalker(CliHelper.getPathToAnalyze(), CliHelper.getMaxThreads());
-      jarWalker.walk();
+      ArchiveWalker archiveWalker = new ArchiveWalker(CliHelper.getPathToAnalyze(), CliHelper.getMaxThreads());
+      archiveWalker.walk();
       long endTime = System.nanoTime();
       logger.info("Analysis done in {} seconds.", (endTime - startTime) / 1000000000.0);
     } catch (ReflectiveOperationException e) {

@@ -33,15 +33,15 @@ import org.objectweb.asm.tree.ClassNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JarAnalyzerCallable implements Callable {
+public class ArchiveAnalyzerCallable implements Callable {
 
-  private static final Logger logger = LoggerFactory.getLogger(JarAnalyzerCallable.class);
+  private static final Logger logger = LoggerFactory.getLogger(ArchiveAnalyzerCallable.class);
 
   private static final String CLASS_EXTENSION = ".class";
   private final Path jarPath;
   private final ByteCodeAnalyzer byteCodeAnalyzer;
 
-  public JarAnalyzerCallable(Path jarPath, ByteCodeAnalyzer byteCodeAnalyzer) {
+  public ArchiveAnalyzerCallable(Path jarPath, ByteCodeAnalyzer byteCodeAnalyzer) {
     this.jarPath = jarPath;
     this.byteCodeAnalyzer = byteCodeAnalyzer;
   }
@@ -51,7 +51,7 @@ public class JarAnalyzerCallable implements Callable {
     File jarFile = new File(jarPath.toUri());
     List<ReportItem> reportItems = new ArrayList<>();
       ZipFile zipFile = new ZipFile(jarFile);
-      zipFile.stream().filter(JarAnalyzerCallable::isClassFile)
+      zipFile.stream().filter(ArchiveAnalyzerCallable::isClassFile)
         .forEach(zipEntry -> {
           try {
             String zipEntryName = zipEntry.getName();

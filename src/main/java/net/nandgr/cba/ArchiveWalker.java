@@ -35,15 +35,16 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JarWalker {
+public class ArchiveWalker {
 
-  private static final Logger logger = LoggerFactory.getLogger(JarWalker.class);
+  private static final Logger logger = LoggerFactory.getLogger(ArchiveWalker.class);
   private static final String JAR_EXTENSION = ".jar";
+  private static final String WAR_EXTENSION = ".war";
   private final String path;
   private final ExecutorService executorService;
   private final ByteCodeAnalyzer byteCodeAnalyzer;
 
-  public JarWalker(String path, int maxThreads) throws ReflectiveOperationException, IOException {
+  public ArchiveWalker(String path, int maxThreads) throws ReflectiveOperationException, IOException {
     this.path = path;
     this.executorService  = Executors.newFixedThreadPool(maxThreads);
     this.byteCodeAnalyzer = new CustomByteCodeAnalyzer(CliHelper.hasCustomFile(), CliHelper.hasChecks(), CliHelper.getRules());
@@ -53,11 +54,14 @@ public class JarWalker {
     logger.info("Walking through JAR files in: " + path);
     List<Future<List<ReportItem>>> reportItemsFutureList = new ArrayList<>();
     Files.walk(Paths.get(path))
-            .filter(filePath -> filePath.toUri().toString().endsWith(JAR_EXTENSION))
+            .filter(filePath -> {
+              String fileString = filePath.toUri().toString();
+              return fileString.endsWith(JAR_EXTENSION) || fileString.endsWith(WAR_EXTENSION);
+            })
             .forEach(jarPath -> {
               logger.info("Analyzing: " + jarPath.toUri().toString());
-              JarAnalyzerCallable jarAnalyzerCallable = new JarAnalyzerCallable(jarPath, byteCodeAnalyzer);
-              Future<List<ReportItem>> reportItemsFuture = executorService.submit(jarAnalyzerCallable);
+              ArchiveAnalyzerCallable archiveAnalyzerCallable = new ArchiveAnalyzerCallable(jarPath, byteCodeAnalyzer);
+              Future<List<ReportItem>> reportItemsFuture = executorService.submit(archiveAnalyzerCallable);
               reportItemsFutureList.add(reportItemsFuture);
             });
     logger.info("Shutting down walker...");

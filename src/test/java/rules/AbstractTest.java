@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import net.nandgr.cba.ByteCodeAnalyzer;
 import net.nandgr.cba.CustomByteCodeAnalyzer;
-import net.nandgr.cba.JarAnalyzerCallable;
+import net.nandgr.cba.ArchiveAnalyzerCallable;
 import net.nandgr.cba.custom.model.Rules;
 import net.nandgr.cba.report.ReportItem;
 import org.apache.commons.io.IOUtils;
@@ -49,7 +49,7 @@ public abstract class AbstractTest {
                   ClassNode classNode = new ClassNode();
                   classReader.accept(classNode,0);
                   List<ReportItem> reportItems = byteCodeAnalyzer.analyze(classNode);
-                  JarAnalyzerCallable.addContextToReportItems(reportItems, "test", filePath.getFileName().toString(), null);
+                  ArchiveAnalyzerCallable.addContextToReportItems(reportItems, "test", filePath.getFileName().toString(), null);
                   this.reportItems.addAll(reportItems);
                 } catch (IOException e) {
                   e.printStackTrace();

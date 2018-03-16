@@ -15,8 +15,9 @@ public class SuperClassTest extends AbstractTest {
   public void test() {
     runTests();
     ReportItem reportItem0 = getReportItems().get(0);
-    assertEquals("SuperClassTestFile$B.class", reportItem0.getClassName());
+    assertEquals("SuperClassTestFile$C.class", reportItem0.getClassName());
     ReportItem reportItem1 = getReportItems().get(1);
-    assertEquals("SuperClassTestFile$C.class", reportItem1.getClassName());
+    assertEquals("SuperClassTestFile$B.class", reportItem1.getClassName());
+
   }
 }
